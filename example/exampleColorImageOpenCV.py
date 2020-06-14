@@ -56,6 +56,7 @@ if __name__ == "__main__":
 		if k==27:    # Esc key to stop
 			break
 
+	pyK4A.device_stop_cameras()
 	pyK4A.device_close()
 
 

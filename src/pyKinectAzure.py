@@ -83,6 +83,24 @@ class pyKinectAzure:
 
 		self.VERIFY(self.k4a.k4a_device_start_cameras(self.device_handle,device_config),"Start K4A cameras failed!")
 
+
+	def device_stop_cameras(self):
+		"""Stops the color and depth camera capture..
+
+		Parameters:
+		None
+
+		Returns:
+		None
+		
+		Remarks:
+		The streaming of individual sensors stops as a result of this call. Once called, k4a_device_start_cameras() may
+		be called again to resume sensor streaming. 		
+		"""
+
+		self.k4a.k4a_device_stop_cameras(self.device_handle)
+
+
 	def device_get_capture(self, timeout_in_ms=k4atypes.K4A_WAIT_INFINITE):
 		"""Reads a sensor capture.
 
