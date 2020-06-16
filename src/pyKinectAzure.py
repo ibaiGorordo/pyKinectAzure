@@ -6,16 +6,10 @@ class pyKinectAzure:
 
 	def __init__(self,modulePath='C:\\Program Files\\Azure Kinect SDK v1.4.0\\sdk\\windows-desktop\\amd64\\release\\bin\\k4a.dll'):
 
-		self.device_handle = k4atypes.k4a_device_t()
-		self.capture_handle = k4atypes.k4a_capture_t()
-
 		self.k4a = k4a(modulePath)
 
-	def VERIFY(self,result, error):
-		if result != k4atypes.K4A_RESULT_SUCCEEDED:
-			print(error)
-			traceback.print_stack()
-			sys.exit(1)
+		self.device_handle = k4atypes.k4a_device_t()
+		self.capture_handle = k4atypes.k4a_capture_t()	
 
 	def device_get_installed_count(self):
 		"""Gets the number of connected devices
@@ -215,6 +209,12 @@ class pyKinectAzure:
 
 		self.k4a.k4a_capture_release(self.capture_handle)
 
+	@staticmethod
+	def VERIFY(result, error):
+		if result != k4atypes.K4A_RESULT_SUCCEEDED:
+			print(error)
+			traceback.print_stack()
+			sys.exit(1)
 
 
 	
