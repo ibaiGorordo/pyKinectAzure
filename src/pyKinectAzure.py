@@ -78,7 +78,7 @@ class pyKinectAzure:
 			self.VERIFY(self.k4a.k4a_device_start_cameras(self.device_handle,device_config.current_config),"Start K4A cameras failed!")
 			return
 
-		self.VERIFY(self.k4a.k4a_device_start_cameras(self.device_handle,device_config),"Start K4A cameras failed!")
+		self.VERIFY(self.k4a.k4a_device_start_cameras(self.device_handle,device_config.current_config),"Start K4A cameras failed!")
 
 
 	def device_stop_cameras(self):
@@ -243,6 +243,25 @@ class pyKinectAzure:
 			else:
 				self.__dict__[name] = value
 
+		def __str__(self):
+			"""Print the current settings and a short explanation"""
+			message = (
+				"Device configuration: \n"
+				f"\tcolor_format: {self.color_format} (0:JPG, 1:NV12, 2:YUY2, 3:BGRA32)\n"
+				f"\tcolor_resolution: {self.color_resolution} (0:OFF, 1:720p, 2:1080p, 3:1440p, 4:1536p, 5:2160p, 6:3072p)\n"
+				f"\tdepth_mode: {self.depth_mode} (0:OFF, 1:NFOV_2X2BINNED, 2:NFOV_UNBINNED,3:WFOV_2X2BINNED, 4:WFOV_UNBINNED, 5:Passive IR)\n"
+				f"\tcamera_fps: {self.camera_fps} (0:5 FPS, 1:15 FPS, 2:30 FPS)\n"
+				f"\tsynchronized_images_only: {self.synchronized_images_only} (True of False). Drop images if the color and depth are not synchronized\n"
+				f"\tdepth_delay_off_color_usec: {self.depth_delay_off_color_usec} ms. Delay between the color image and the depth image\n"
+				f"\twired_sync_mode: {self.wired_sync_mode} (0:Standalone mode, 1:Master mode, 2:Subordinate mode)\n"
+				f"\tsubordinate_delay_off_master_usec: {self.subordinate_delay_off_master_usec} ms. The external synchronization timing.\n"
+				f"\tdisable_streaming_indicator: {self.disable_streaming_indicator} (True or False). Streaming indicator automatically turns on when the color or depth camera's are in use.\n"
+				)
+			return message
+
+		def __repr__(self):
+			"""Return the current configuration"""
+			return self.current_config
 
 		def _on_change(self):
 			self.current_config =  _k4a.k4a_device_configuration_t(self.color_format, \

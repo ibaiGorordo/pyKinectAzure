@@ -20,9 +20,10 @@ if __name__ == "__main__":
 	# Modify camera configuration
 	device_config = pyKinectAzure.config()
 	device_config.color_resolution = _k4a.K4A_COLOR_RESOLUTION_1080P
+	print(device_config)
 
 	# Start cameras using modified configuration
-	pyK4A.device_start_cameras(device_config.current_config)
+	pyK4A.device_start_cameras(device_config)
 
 	k = 0
 	while True:
