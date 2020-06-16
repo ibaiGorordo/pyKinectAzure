@@ -317,23 +317,3 @@ class k4a_imu_sample_t(ctypes.Structure):
 
 K4A_DEVICE_DEFAULT = 0
 K4A_WAIT_INFINITE = -1
-
-K4A_DEVICE_CONFIG_INIT_DISABLE_ALL = k4a_device_configuration_t(K4A_IMAGE_FORMAT_COLOR_MJPG, \
-																K4A_COLOR_RESOLUTION_OFF,\
-																K4A_DEPTH_MODE_OFF,\
-																K4A_FRAMES_PER_SECOND_30,\
-																False,\
-																0,\
-																K4A_WIRED_SYNC_MODE_STANDALONE,\
-																0,\
-																False)
-
-K4A_DEVICE_CONFIG_INIT_DEFAULT = k4a_device_configuration_t(K4A_IMAGE_FORMAT_COLOR_MJPG, \
-															K4A_COLOR_RESOLUTION_720P,\
-															K4A_DEPTH_MODE_WFOV_2X2BINNED,\
-															K4A_FRAMES_PER_SECOND_30,\
-															False,\
-															0,\
-															K4A_WIRED_SYNC_MODE_STANDALONE,\
-															0,\
-															False)

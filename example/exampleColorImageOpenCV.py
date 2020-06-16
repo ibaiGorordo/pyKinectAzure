@@ -2,8 +2,7 @@ import sys
 sys.path.insert(1, '../src/')
 
 import numpy as np
-import _k4atypes as k4atypesk
-from pyKinectAzure import pyKinectAzure
+from pyKinectAzure import pyKinectAzure, _k4a
 import cv2
 
 # Path to the module
@@ -18,8 +17,12 @@ if __name__ == "__main__":
 	# Open device
 	pyK4A.device_open()
 
-	# Start cameras using default configuration
-	pyK4A.device_start_cameras()
+	# Modify camera configuration
+	device_config = pyKinectAzure.config()
+	device_config.color_resolution = _k4a.K4A_COLOR_RESOLUTION_1080P
+
+	# Start cameras using modified configuration
+	pyK4A.device_start_cameras(device_config.current_config)
 
 	k = 0
 	while True:

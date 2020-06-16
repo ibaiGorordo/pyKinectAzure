@@ -1,15 +1,14 @@
-from _k4a import k4a
-import _k4atypes as k4atypes
+import _k4a
 import traceback
 
 class pyKinectAzure:
 
 	def __init__(self,modulePath='C:\\Program Files\\Azure Kinect SDK v1.4.0\\sdk\\windows-desktop\\amd64\\release\\bin\\k4a.dll'):
 
-		self.k4a = k4a(modulePath)
+		self.k4a = _k4a.k4a(modulePath)
 
-		self.device_handle = k4atypes.k4a_device_t()
-		self.capture_handle = k4atypes.k4a_capture_t()	
+		self.device_handle = _k4a.k4a_device_t()
+		self.capture_handle = _k4a.k4a_capture_t()	
 
 	def device_get_installed_count(self):
 		"""Gets the number of connected devices
@@ -59,7 +58,7 @@ class pyKinectAzure:
 		"""
 		self.k4a.k4a_device_close(self.device_handle)
 
-	def device_start_cameras(self, device_config=k4atypes.K4A_DEVICE_CONFIG_INIT_DEFAULT):
+	def device_start_cameras(self, device_config=None):
 		"""Starts color and depth camera capture.
 
 		Parameters:
@@ -74,6 +73,10 @@ class pyKinectAzure:
 		It is not valid to call k4a_device_start_cameras() a second time on the same k4a_device_t until
 		k4a_device_stop_cameras() has been called. 		
 		"""
+		if device_config is None:
+			device_config = self.config()
+			self.VERIFY(self.k4a.k4a_device_start_cameras(self.device_handle,device_config.current_config),"Start K4A cameras failed!")
+			return
 
 		self.VERIFY(self.k4a.k4a_device_start_cameras(self.device_handle,device_config),"Start K4A cameras failed!")
 
@@ -95,7 +98,7 @@ class pyKinectAzure:
 		self.k4a.k4a_device_stop_cameras(self.device_handle)
 
 
-	def device_get_capture(self, timeout_in_ms=k4atypes.K4A_WAIT_INFINITE):
+	def device_get_capture(self, timeout_in_ms=_k4a.K4A_WAIT_INFINITE):
 		"""Reads a sensor capture.
 
 		Parameters:h
@@ -209,9 +212,53 @@ class pyKinectAzure:
 
 		self.k4a.k4a_capture_release(self.capture_handle)
 
+	class config:
+		def __init__(self,
+					color_format=_k4a.K4A_IMAGE_FORMAT_COLOR_MJPG,
+					color_resolution=_k4a.K4A_COLOR_RESOLUTION_720P,
+					depth_mode=_k4a.K4A_DEPTH_MODE_WFOV_2X2BINNED,
+					camera_fps=_k4a.K4A_FRAMES_PER_SECOND_30,
+					synchronized_images_only=False,
+					depth_delay_off_color_usec=0,
+					wired_sync_mode=_k4a.K4A_WIRED_SYNC_MODE_STANDALONE,
+					subordinate_delay_off_master_usec=0,
+					disable_streaming_indicator=False):
+			self.color_format = color_format
+			self.color_resolution = color_resolution
+			self.depth_mode = depth_mode
+			self.camera_fps = camera_fps
+			self.synchronized_images_only = synchronized_images_only
+			self.depth_delay_off_color_usec = depth_delay_off_color_usec
+			self.wired_sync_mode = wired_sync_mode
+			self.subordinate_delay_off_master_usec = subordinate_delay_off_master_usec
+			self.disable_streaming_indicator = disable_streaming_indicator
+
+			self._on_change()
+
+		def __setattr__(self, name, value):
+			if hasattr(self, 'name'):
+				if self.__dict__[name] != value:
+					self.__dict__[name] = value
+					self._on_change()
+			else:
+				self.__dict__[name] = value
+
+
+		def _on_change(self):
+			self.current_config =  _k4a.k4a_device_configuration_t(self.color_format, \
+												self.color_resolution,\
+												self.depth_mode,\
+												self.camera_fps ,\
+												self.synchronized_images_only,\
+												self.depth_delay_off_color_usec,\
+												self.wired_sync_mode,\
+												self.subordinate_delay_off_master_usec,\
+												self.disable_streaming_indicator)
+
+
 	@staticmethod
 	def VERIFY(result, error):
-		if result != k4atypes.K4A_RESULT_SUCCEEDED:
+		if result != _k4a.K4A_RESULT_SUCCEEDED:
 			print(error)
 			traceback.print_stack()
 			sys.exit(1)
