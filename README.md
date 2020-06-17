@@ -35,7 +35,7 @@ For an example on how to obtain and visualize the video from the Kinect Azure ch
 
 ```
 git clone https://github.com/ibaiGorordo/pyKinectAzure.git
-cd pyKinectAzure/example
+cd pyKinectAzure/examples
 python exampleColorImageOpenCV.py
 ```
 
