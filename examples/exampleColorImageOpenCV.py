@@ -36,16 +36,8 @@ if __name__ == "__main__":
 		# Check the image has been read correctly
 		if color_image:
 
-			# Get the height and width for the current image:
-			color_image_width = pyK4A.image_get_width_pixels(color_image)
-			color_image_height= pyK4A.image_get_height_pixels(color_image)
-
-			# Get the pointer to the buffer containing the image data
-			imageBuffer = pyK4A.image_get_buffer(color_image)
-
-			# Read the data in the buffer and decode to obtain the image
-			jpgArray = np.ctypeslib.as_array(imageBuffer,shape=[color_image_width*color_image_height])
-			imageMat = cv2.imdecode(np.frombuffer(jpgArray, dtype=np.uint8), -1)
+			# Read and convert the image data to numpy array:
+			imageMat = pyK4A.image_convert_to_numpy(color_image)
 
 			# Plot the image
 			cv2.namedWindow('Color Image',cv2.WINDOW_NORMAL)

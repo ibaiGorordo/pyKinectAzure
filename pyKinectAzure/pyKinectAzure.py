@@ -1,5 +1,8 @@
 import _k4a
 import traceback
+import numpy as np
+import cv2
+import sys
 
 class pyKinectAzure:
 
@@ -229,6 +232,41 @@ class pyKinectAzure:
 
 		return int(self.k4a.k4a_image_get_height_pixels(image_handle))
 
+	def image_convert_to_numpy(self, image_handle):
+		"""Get the image data as a numpy array
+
+		Parameters:
+		image_handle (k4a_image_t): Handle to the Image
+
+		Returns:
+		numpy.ndarray: Numpy array with the image data
+		"""
+
+		# Get the pointer to the buffer containing the image data
+		buffer_pointer = self.image_get_buffer(image_handle)
+
+		# Get the size of the buffer
+		image_size = self.image_get_size(image_handle)
+		image_width = self.image_get_width_pixels(image_handle)
+		image_height = self.image_get_height_pixels(image_handle)
+
+		# Get the image format
+		image_format = self.image_get_format(image_handle)
+		# print(image_format)
+
+		# Read the data in the buffer
+		bufferArray = np.ctypeslib.as_array(buffer_pointer,shape=[image_size])
+
+		# Parse buffer based on image format
+		if image_format == _k4a.K4A_IMAGE_FORMAT_COLOR_MJPG:
+			return cv2.imdecode(np.frombuffer(bufferArray, dtype=np.uint8), -1)
+		elif image_format == _k4a.K4A_IMAGE_FORMAT_COLOR_NV12:
+			yuv_image = np.frombuffer(bufferArray, dtype=np.uint8).reshape(int(image_height*1.5),image_width)
+			return cv2.cvtColor(yuv_image, cv2.COLOR_YUV2BGR_NV12)
+		elif image_format == _k4a.K4A_IMAGE_FORMAT_COLOR_YUY2:
+			yuv_image = np.frombuffer(bufferArray, dtype=np.uint8).reshape(image_height,image_width,2)
+			return cv2.cvtColor(yuv_image, cv2.COLOR_YUV2BGR_YUY2)
+
 	def image_release(self, image_handle):
 		"""Remove a reference from the k4a_image_t.
 
@@ -284,10 +322,15 @@ class pyKinectAzure:
 			self._on_change()
 
 		def __setattr__(self, name, value):
-			if hasattr(self, 'name'):
-				if self.__dict__[name] != value:
+			"""Run on change function when configuration parameters are changed
+			"""
+			if hasattr(self, name):
+				if name != "current_config":
+					if int(self.__dict__[name]) != value:
+						self.__dict__[name] = value
+						self._on_change()
+				else:
 					self.__dict__[name] = value
-					self._on_change()
 			else:
 				self.__dict__[name] = value
 
@@ -321,7 +364,6 @@ class pyKinectAzure:
 												self.wired_sync_mode,\
 												self.subordinate_delay_off_master_usec,\
 												self.disable_streaming_indicator)
-
 
 	@staticmethod
 	def VERIFY(result, error):
