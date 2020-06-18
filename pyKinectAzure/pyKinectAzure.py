@@ -137,6 +137,71 @@ class pyKinectAzure:
 
 		return self.k4a.k4a_capture_get_color_image(self.capture_handle)
 
+	def capture_get_depth_image(self):
+		"""Get the depth image associated with the given capture.
+
+		Parameters:
+		None
+			
+		Returns:
+		k4a_image_t: Handle to the Image
+		
+		Remarks:
+		Call this function to access the depth image part of this capture. Release the \ref k4a_image_t with
+		k4a_image_release();
+		"""
+
+		return self.k4a.k4a_capture_get_depth_image(self.capture_handle)
+
+	def image_get_buffer(self, image_handle):
+		"""Get the image buffer.
+
+		Parameters:
+		image_handle (k4a_image_t): Handle to the Image
+
+		Returns:
+		ctypes.POINTER(ctypes.c_uint8): The function will return NULL if there is an error, and will normally return a pointer to the image buffer.
+										Since all k4a_image_t instances are created with an image buffer, this function should only return NULL if the
+										image_handle is invalid.
+
+		Remarks:
+		Use this buffer to access the raw image data.
+		"""
+
+		return self.k4a.k4a_image_get_buffer(image_handle)
+		
+	def image_get_size(self, image_handle):
+		"""Get the image buffer size.
+
+		Parameters:
+		image_handle (k4a_image_t): Handle to the Image
+
+		Returns:
+		int: The function will return 0 if there is an error, and will normally return the image size.
+		Since all k4a_image_t instances are created with an image buffer, this function should only return 0 if the
+		image_handle is invalid.
+
+		Remarks:
+		Use this function to know what the size of the image buffer is returned by k4a_image_get_buffer().
+		"""
+
+		return int(self.k4a.k4a_image_get_size(image_handle))
+
+	def image_get_format(self, image_handle):
+		"""Get the format of the image.
+
+		Parameters:
+		image_handle (k4a_image_t): Handle to the Image
+
+		Returns:
+		int: This function is not expected to fail, all k4a_image_t's are created with a known format. If the
+		image_handle is invalid, the function will return ::K4A_IMAGE_FORMAT_CUSTOM.
+
+		Remarks:
+		Use this function to determine the format of the image buffer.
+		"""
+
+		return int(self.k4a.k4a_image_get_format(image_handle))
 
 	def image_get_width_pixels(self, image_handle):
 		"""Get the image width in pixels.
@@ -163,23 +228,6 @@ class pyKinectAzure:
 		"""
 
 		return int(self.k4a.k4a_image_get_height_pixels(image_handle))
-
-	def image_get_buffer(self, image_handle):
-		"""Get the image buffer.
-
-		Parameters:
-		image_handle (k4a_image_t): Handle to the Image
-
-		Returns:
-		ctypes.POINTER(ctypes.c_uint8): The function will return NULL if there is an error, and will normally return a pointer to the image buffer.
-										Since all k4a_image_t instances are created with an image buffer, this function should only return NULL if the
-										image_handle is invalid.
-
-		Remarks:
-		Use this buffer to access the raw image data.
-		"""
-
-		return self.k4a.k4a_image_get_buffer(image_handle)
 
 	def image_release(self, image_handle):
 		"""Remove a reference from the k4a_image_t.
