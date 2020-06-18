@@ -31,21 +31,21 @@ if __name__ == "__main__":
 		pyK4A.device_get_capture()
 
 		# Get the color image from the capture
-		color_image = pyK4A.capture_get_color_image()
+		color_image_handle = pyK4A.capture_get_color_image()
 
 		# Check the image has been read correctly
-		if color_image:
+		if color_image_handle:
 
 			# Read and convert the image data to numpy array:
-			imageMat = pyK4A.image_convert_to_numpy(color_image)
+			color_image = pyK4A.image_convert_to_numpy(color_image_handle)
 
 			# Plot the image
 			cv2.namedWindow('Color Image',cv2.WINDOW_NORMAL)
-			cv2.imshow("Color Image",imageMat)
+			cv2.imshow("Color Image",color_image)
 			k = cv2.waitKey(20)
 
 			# Release the image
-			pyK4A.image_release(color_image)
+			pyK4A.image_release(color_image_handle)
 
 		pyK4A.capture_release()
 

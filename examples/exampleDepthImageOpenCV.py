@@ -20,6 +20,7 @@ if __name__ == "__main__":
 	# Modify camera configuration
 	device_config = pyKinectAzure.config()
 	device_config.color_resolution = _k4a.K4A_COLOR_RESOLUTION_1080P
+	device_config.depth_mode = _k4a.K4A_DEPTH_MODE_WFOV_2X2BINNED
 	print(device_config)
 
 	# Start cameras using modified configuration
@@ -31,21 +32,23 @@ if __name__ == "__main__":
 		pyK4A.device_get_capture()
 
 		# Get the color image from the capture
-		depth_image = pyK4A.capture_get_depth_image()
+		depth_image_handle = pyK4A.capture_get_depth_image()
 
 		# Check the image has been read correctly
-		if depth_image:
+		if depth_image_handle:
 
 			# Read and convert the image data to numpy array:
-			imageMat = pyK4A.image_convert_to_numpy(depth_image)
+			depth_image = pyK4A.image_convert_to_numpy(depth_image_handle)
+
+			depth_color_image = cv2.applyColorMap(np.round(depth_image/30).astype(np.uint8), cv2.COLORMAP_JET)
 
 			# Plot the image
-			cv2.namedWindow('Color Image',cv2.WINDOW_NORMAL)
-			cv2.imshow("Color Image",imageMat)
-			k = cv2.waitKey(20)
+			cv2.namedWindow('Colorized Depth Image',cv2.WINDOW_NORMAL)
+			cv2.imshow('Colorized Depth Image',depth_color_image)
+			k = cv2.waitKey(25)
 
 			# Release the image
-			pyK4A.image_release(depth_image)
+			pyK4A.image_release(depth_image_handle)
 
 		pyK4A.capture_release()
 
