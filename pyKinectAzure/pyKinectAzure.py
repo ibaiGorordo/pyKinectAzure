@@ -150,11 +150,27 @@ class pyKinectAzure:
 		k4a_image_t: Handle to the Image
 		
 		Remarks:
-		Call this function to access the depth image part of this capture. Release the \ref k4a_image_t with
+		Call this function to access the depth image part of this capture. Release the k4a_image_t with
 		k4a_image_release();
 		"""
 
 		return self.k4a.k4a_capture_get_depth_image(self.capture_handle)
+
+	def capture_get_ir_image(self):
+		"""Get the IR image associated with the given capture.
+
+		Parameters:
+		None
+			
+		Returns:
+		k4a_image_t: Handle to the Image
+		
+		Remarks:
+		Call this function to access the IR image part of this capture. Release the k4a_image_t with
+		k4a_image_release();
+		"""
+
+		return self.k4a.k4a_capture_get_ir_image(self.capture_handle)
 
 	def image_get_buffer(self, image_handle):
 		"""Get the image buffer.
@@ -269,6 +285,8 @@ class pyKinectAzure:
 		elif image_format == _k4a.K4A_IMAGE_FORMAT_COLOR_BGRA32:
 			return np.frombuffer(bufferArray, dtype=np.uint8).reshape(image_height,image_width,4)
 		elif image_format == _k4a.K4A_IMAGE_FORMAT_DEPTH16:
+			return np.frombuffer(bufferArray, dtype="<i2").reshape(image_height,image_width)
+		elif image_format == _k4a.K4A_IMAGE_FORMAT_IR16:
 			return np.frombuffer(bufferArray, dtype="<i2").reshape(image_height,image_width)
 
 
