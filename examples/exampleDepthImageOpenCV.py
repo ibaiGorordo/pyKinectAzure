@@ -40,6 +40,7 @@ if __name__ == "__main__":
 			# Read and convert the image data to numpy array:
 			depth_image = pyK4A.image_convert_to_numpy(depth_image_handle)
 
+			# Convert depth image (mm) to color, the range needs to be reduced down to the range (0,255)
 			depth_color_image = cv2.applyColorMap(np.round(depth_image/30).astype(np.uint8), cv2.COLORMAP_JET)
 
 			# Plot the image

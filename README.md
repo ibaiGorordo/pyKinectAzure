@@ -48,16 +48,16 @@ Bug reports are also appreciated. Please include as much details as possible.
 ## TODO:
 
 ### Wrappers for the Kinect Azure data
-- [ ] Create wrapper to read depth images.
+- [x] Create wrapper to read depth images.
 - [ ] Create wrapper to read Infrared images.
 - [ ] Create wrapper to read IMU data.
-- [ ] Create function to convert image buffer to image depending on the image type.
+- [x] Create function to convert image buffer to image depending on the image type.
 - [ ] Create wrapper to transform depth image to color image.
 - [ ] Create wrapper to transform depth image to 3D pint cloud.
 - [ ] Create funtion to visualize 3D point cloud.
 
 ### Create examples
-- [ ] Example to visualize depth images.
+- [x] Example to visualize depth images.
 - [ ] Example to visualize passive IR images.
 - [ ] Example to plot IMU data.
 - [ ] Example to visualize Depth as color image.
