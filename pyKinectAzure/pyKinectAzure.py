@@ -266,6 +266,12 @@ class pyKinectAzure:
 		elif image_format == _k4a.K4A_IMAGE_FORMAT_COLOR_YUY2:
 			yuv_image = np.frombuffer(bufferArray, dtype=np.uint8).reshape(image_height,image_width,2)
 			return cv2.cvtColor(yuv_image, cv2.COLOR_YUV2BGR_YUY2)
+		elif image_format == _k4a.K4A_IMAGE_FORMAT_COLOR_BGRA32:
+			return np.frombuffer(bufferArray, dtype=np.uint8).reshape(image_height,image_width,4)
+		elif image_format == _k4a.K4A_IMAGE_FORMAT_DEPTH16:
+			print(np.max(np.frombuffer(bufferArray, dtype="<i2")))
+			return np.frombuffer(bufferArray, dtype="<i2").reshape(image_height,image_width)
+
 
 	def image_release(self, image_handle):
 		"""Remove a reference from the k4a_image_t.
