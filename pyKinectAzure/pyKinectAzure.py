@@ -4,6 +4,8 @@ import numpy as np
 import cv2
 import sys
 
+from config import config
+
 class pyKinectAzure:
 
 	def __init__(self,modulePath='C:\\Program Files\\Azure Kinect SDK v1.4.0\\sdk\\windows-desktop\\amd64\\release\\bin\\k4a.dll'):
@@ -12,6 +14,7 @@ class pyKinectAzure:
 
 		self.device_handle = _k4a.k4a_device_t()
 		self.capture_handle = _k4a.k4a_capture_t()	
+		self.config = config()
 
 	def device_get_installed_count(self):
 		"""Gets the number of connected devices
@@ -320,73 +323,6 @@ class pyKinectAzure:
 		"""
 
 		self.k4a.k4a_capture_release(self.capture_handle)
-
-	class config:
-		def __init__(self,
-					color_format=_k4a.K4A_IMAGE_FORMAT_COLOR_MJPG,
-					color_resolution=_k4a.K4A_COLOR_RESOLUTION_720P,
-					depth_mode=_k4a.K4A_DEPTH_MODE_WFOV_2X2BINNED,
-					camera_fps=_k4a.K4A_FRAMES_PER_SECOND_30,
-					synchronized_images_only=False,
-					depth_delay_off_color_usec=0,
-					wired_sync_mode=_k4a.K4A_WIRED_SYNC_MODE_STANDALONE,
-					subordinate_delay_off_master_usec=0,
-					disable_streaming_indicator=False):
-			self.color_format = color_format
-			self.color_resolution = color_resolution
-			self.depth_mode = depth_mode
-			self.camera_fps = camera_fps
-			self.synchronized_images_only = synchronized_images_only
-			self.depth_delay_off_color_usec = depth_delay_off_color_usec
-			self.wired_sync_mode = wired_sync_mode
-			self.subordinate_delay_off_master_usec = subordinate_delay_off_master_usec
-			self.disable_streaming_indicator = disable_streaming_indicator
-
-			self._on_change()
-
-		def __setattr__(self, name, value):
-			"""Run on change function when configuration parameters are changed
-			"""
-			if hasattr(self, name):
-				if name != "current_config":
-					if int(self.__dict__[name]) != value:
-						self.__dict__[name] = value
-						self._on_change()
-				else:
-					self.__dict__[name] = value
-			else:
-				self.__dict__[name] = value
-
-		def __str__(self):
-			"""Print the current settings and a short explanation"""
-			message = (
-				"Device configuration: \n"
-				f"\tcolor_format: {self.color_format} (0:JPG, 1:NV12, 2:YUY2, 3:BGRA32)\n"
-				f"\tcolor_resolution: {self.color_resolution} (0:OFF, 1:720p, 2:1080p, 3:1440p, 4:1536p, 5:2160p, 6:3072p)\n"
-				f"\tdepth_mode: {self.depth_mode} (0:OFF, 1:NFOV_2X2BINNED, 2:NFOV_UNBINNED,3:WFOV_2X2BINNED, 4:WFOV_UNBINNED, 5:Passive IR)\n"
-				f"\tcamera_fps: {self.camera_fps} (0:5 FPS, 1:15 FPS, 2:30 FPS)\n"
-				f"\tsynchronized_images_only: {self.synchronized_images_only} (True of False). Drop images if the color and depth are not synchronized\n"
-				f"\tdepth_delay_off_color_usec: {self.depth_delay_off_color_usec} ms. Delay between the color image and the depth image\n"
-				f"\twired_sync_mode: {self.wired_sync_mode} (0:Standalone mode, 1:Master mode, 2:Subordinate mode)\n"
-				f"\tsubordinate_delay_off_master_usec: {self.subordinate_delay_off_master_usec} ms. The external synchronization timing.\n"
-				f"\tdisable_streaming_indicator: {self.disable_streaming_indicator} (True or False). Streaming indicator automatically turns on when the color or depth camera's are in use.\n"
-				)
-			return message
-
-		def __repr__(self):
-			"""Return the current configuration"""
-			return self.current_config
-
-		def _on_change(self):
-			self.current_config =  _k4a.k4a_device_configuration_t(self.color_format, \
-												self.color_resolution,\
-												self.depth_mode,\
-												self.camera_fps ,\
-												self.synchronized_images_only,\
-												self.depth_delay_off_color_usec,\
-												self.wired_sync_mode,\
-												self.subordinate_delay_off_master_usec,\
-												self.disable_streaming_indicator)
 
 	@staticmethod
 	def VERIFY(result, error):

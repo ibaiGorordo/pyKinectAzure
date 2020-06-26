@@ -18,7 +18,7 @@ if __name__ == "__main__":
 	pyK4A.device_open()
 
 	# Modify camera configuration
-	device_config = pyKinectAzure.config()
+	device_config = pyK4A.config
 	device_config.color_resolution = _k4a.K4A_COLOR_RESOLUTION_1080P
 	device_config.depth_mode = _k4a.K4A_DEPTH_MODE_WFOV_2X2BINNED
 	print(device_config)
