@@ -1,5 +1,4 @@
 import _k4a
-import traceback
 import numpy as np
 import cv2
 import sys
@@ -45,7 +44,7 @@ class pyKinectAzure:
 
 		When done with the device, close the handle with k4a_device_close()
 		"""
-		self.VERIFY(self.k4a.k4a_device_open(index,self.device_handle),"Open K4A Device failed!")
+		_k4a.VERIFY(self.k4a.k4a_device_open(index,self.device_handle),"Open K4A Device failed!")
 
 	def device_close(self):
 		"""Closes an Azure Kinect device.
@@ -81,10 +80,10 @@ class pyKinectAzure:
 		"""
 		if device_config is None:
 			device_config = self.config()
-			self.VERIFY(self.k4a.k4a_device_start_cameras(self.device_handle,device_config.current_config),"Start K4A cameras failed!")
+			_k4a.VERIFY(self.k4a.k4a_device_start_cameras(self.device_handle,device_config.current_config),"Start K4A cameras failed!")
 			return
 
-		self.VERIFY(self.k4a.k4a_device_start_cameras(self.device_handle,device_config.current_config),"Start K4A cameras failed!")
+		_k4a.VERIFY(self.k4a.k4a_device_start_cameras(self.device_handle,device_config.current_config),"Start K4A cameras failed!")
 
 
 	def device_stop_cameras(self):
@@ -125,7 +124,7 @@ class pyKinectAzure:
 		If a capture is not available in the configured timeout_in_ms, then the API will return ::K4A_WAIT_RESULT_TIMEOUT.
 
 		"""
-		self.VERIFY(self.k4a.k4a_device_get_capture(self.device_handle,self.capture_handle,timeout_in_ms),"Get capture failed!")
+		_k4a.VERIFY(self.k4a.k4a_device_get_capture(self.device_handle,self.capture_handle,timeout_in_ms),"Get capture failed!")
 
 	def capture_get_color_image(self):
 		"""Get the color image associated with the given capture.
@@ -324,12 +323,6 @@ class pyKinectAzure:
 
 		self.k4a.k4a_capture_release(self.capture_handle)
 
-	@staticmethod
-	def VERIFY(result, error):
-		if result != _k4a.K4A_RESULT_SUCCEEDED:
-			print(error)
-			traceback.print_stack()
-			sys.exit(1)
 
 
 	

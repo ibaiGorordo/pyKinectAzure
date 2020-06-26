@@ -1,6 +1,7 @@
 import ctypes
 import sys
 from _k4atypes import *
+import traceback
 
 class k4a:
 
@@ -551,5 +552,9 @@ class k4a:
 																	k4a_calibration_type_t,\
 																	k4a_image_t,\
 																	)
-
+def VERIFY(result, error):
+	if result != K4A_RESULT_SUCCEEDED:
+		print(error)
+		traceback.print_stack()
+		sys.exit(1)
 
