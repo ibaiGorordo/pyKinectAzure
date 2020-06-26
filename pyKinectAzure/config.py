@@ -52,9 +52,6 @@ class config:
 			)
 		return message
 
-	def __repr__(self):
-		"""Return the current configuration"""
-		return self.current_config
 
 	def _on_change(self):
 		self.current_config =  _k4a.k4a_device_configuration_t(self.color_format, \

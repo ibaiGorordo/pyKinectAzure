@@ -314,6 +314,8 @@ class k4a_imu_sample_t(ctypes.Structure):
 		("gyro_timestamp_usec", ctypes.c_uint64),
 	]
 
+IMU_SAMPLE_SIZE = ctypes.sizeof(k4a_imu_sample_t)
+
 
 K4A_DEVICE_DEFAULT = 0
 K4A_WAIT_INFINITE = -1
