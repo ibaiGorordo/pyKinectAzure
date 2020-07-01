@@ -51,7 +51,7 @@ if __name__ == "__main__":
 			transformed_depth_color_image = cv2.applyColorMap(np.round(transformed_depth_image/30).astype(np.uint8), cv2.COLORMAP_JET)
 
 			# Add the depth image over the color image:
-			combined_image = cv2.addWeighted(color_image,0.5,transformed_depth_color_image,0.5,0)
+			combined_image = cv2.addWeighted(color_image,0.7,transformed_depth_color_image,0.3,0)
 			
 			# Plot the image
 			cv2.namedWindow('Colorized Depth Image',cv2.WINDOW_NORMAL)
