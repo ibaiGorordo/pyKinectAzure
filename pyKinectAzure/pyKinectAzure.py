@@ -198,6 +198,25 @@ class pyKinectAzure:
 		if self.imu_running:
 			_k4a.VERIFY(self.k4a.k4a_device_get_imu_sample(self.device_handle,self.imu_sample,timeout_in_ms),"Get IMU failed!")
 
+	def device_get_calibration(self, depth_mode, color_resolution,calibration):
+		"""Get the camera calibration for the entire Azure Kinect device.
+
+		Parameters:h
+		depth_mode(k4a_depth_mode_t): Mode in which depth camera is operated.
+		color_resolution(k4a_color_resolution_t): Resolution in which color camera is operated.
+		calibration(k4a_calibration_t):Location to write the calibration
+
+		Returns:
+		K4A_RESULT_SUCCEEDED if calibration was successfully written. ::K4A_RESULT_FAILED otherwise.
+
+		Remarks:
+		The calibration represents the data needed to transform between the camera views and may be
+		different for each operating depth_mode and color_resolution the device is configured to operate in.
+
+		The calibration output is used as input to all calibration and transformation functions.
+		"""
+		_k4a.VERIFY(self.k4a.k4a_device_get_calibration(self.device_handle,depth_mode,color_resolution,calibration),"Get calibration failed!")
+
 	def capture_get_color_image(self):
 		"""Get the color image associated with the given capture.
 
@@ -245,6 +264,31 @@ class pyKinectAzure:
 		"""
 
 		return self.k4a.k4a_capture_get_ir_image(self.capture_handle)
+
+	def image_create(self,image_format,width_pixels,height_pixels,stride_bytes,image_handle):
+		"""Create an image.
+
+		Parameters:
+		image_format(k4a_image_format_t): The format of the image that will be stored in this image container.
+		width_pixels(int): Width in pixels.
+		height_pixels(int): Height in pixels.
+		stride_bytes(int): The number of bytes per horizontal line of the image.
+						   If set to 0, the stride will be set to the minimum size given the format and width_pixels.
+		image_handle(k4a_image_t): Pointer to store image handle in.
+
+		Returns:
+		Returns #K4A_RESULT_SUCCEEDED on success. Errors are indicated with #K4A_RESULT_FAILED.
+		
+		Remarks:
+		This function is used to create images of formats that have consistent stride. The function is not suitable for
+		compressed formats that may not be represented by the same number of bytes per line.
+
+		For most image formats, the function will allocate an image buffer of size height_pixels * stride_bytes.
+		Buffers #K4A_IMAGE_FORMAT_COLOR_NV12 format will allocate an additional height_pixels / 2 set of lines (each of 
+		stride_bytes). This function cannot be used to allocate #K4A_IMAGE_FORMAT_COLOR_MJPG buffers.
+		"""
+		_k4a.VERIFY(self.k4a.k4a_image_create(image_format,width_pixels,height_pixels,stride_bytes,image_handle),"Create image failed!")
+
 
 	def image_get_buffer(self, image_handle):
 		"""Get the image buffer.
@@ -322,6 +366,74 @@ class pyKinectAzure:
 
 		return int(self.k4a.k4a_image_get_height_pixels(image_handle))
 
+	def image_get_stride_bytes(self,image_handle):
+		"""Get the image stride in bytes.
+
+		Parameters:
+		image_handle (k4a_image_t): Handle to the Image
+
+		Returns:
+		int: This function is not expected to fail, all k4a_image_t's are created with a known stride. If the
+		image_handle is invalid, or the image's format does not have a stride, the function will return 0.
+		"""
+
+		return int(self.k4a.k4a_image_get_stride_bytes(image_handle))
+
+
+	def transformation_create(self, calibration):
+		"""Get handle to transformation handle.
+
+		Parameters:
+		calibration(k4a_calibration_t): A calibration structure obtained by k4a_device_get_calibration().
+
+		Returns:
+		k4a_transformation_t: A transformation handle. A NULL is returned if creation fails.
+
+		Remarks:
+		The transformation handle is used to transform images from the coordinate system of one camera into the other. Each
+		transformation handle requires some pre-computed resources to be allocated, which are retained until the handle is
+		destroyed.
+
+		The transformation handle must be destroyed with k4a_transformation_destroy() when it is no longer to be used.
+		"""
+
+		return self.k4a.k4a_transformation_create(calibration)
+
+	def transformation_destroy(self, transformation_handle):
+		"""Destroy transformation handle.
+
+		Parameters:
+		transformation_handle(k4a_transformation_t): Transformation handle to destroy.
+
+		Returns:
+		None
+
+		Remarks:
+		None
+		"""
+
+		self.k4a.k4a_transformation_destroy(transformation_handle)
+
+	def transformation_depth_image_to_color_camera(self,transformation_handle,input_depth_image_handle, transformed_depth_image_handle):
+		"""Transforms the depth map into the geometry of the color camera.
+
+		Parameters:
+		transformation_handle (k4a_transformation_t): Transformation handle.
+		input_depth_image_handle (k4a_image_t): Handle to input depth image.
+		transformed_depth_image_handle (k4a_image_t): Handle to output transformed depth image.
+
+		Returns:
+		K4A_RESULT_SUCCEEDED if transformed_depth_image was successfully written and ::K4A_RESULT_FAILED otherwise.
+		
+		Remarks:
+		This produces a depth image for which each pixel matches the corresponding pixel coordinates of the color camera.
+
+		transformed_depth_image must have a width and height matching the width and height of the color camera in the mode
+		specified by the k4a_calibration_t used to create the transformation_handle with k4a_transformation_create().
+		"""
+
+		_k4a.VERIFY(self.k4a.k4a_transformation_depth_image_to_color_camera(transformation_handle,input_depth_image_handle,transformed_depth_image_handle),"Transformation from depth to color failed!")
+
 	def image_convert_to_numpy(self, image_handle):
 		"""Get the image data as a numpy array
 
@@ -342,7 +454,6 @@ class pyKinectAzure:
 
 		# Get the image format
 		image_format = self.image_get_format(image_handle)
-		# print(image_format)
 
 		# Read the data in the buffer
 		buffer_array = np.ctypeslib.as_array(buffer_pointer,shape=[image_size])
@@ -362,6 +473,37 @@ class pyKinectAzure:
 			return np.frombuffer(buffer_array, dtype="<i2").reshape(image_height,image_width)
 		elif image_format == _k4a.K4A_IMAGE_FORMAT_IR16:
 			return np.frombuffer(buffer_array, dtype="<i2").reshape(image_height,image_width)
+
+	def transform_depth_to_color(self,input_depth_image_handle, color_image_handle):
+		calibration = _k4a.k4a_calibration_t()
+
+		# Get desired image format
+		image_format = self.image_get_format(input_depth_image_handle)
+		image_width = self.image_get_width_pixels(color_image_handle)
+		image_height = self.image_get_height_pixels(color_image_handle)
+		image_stride = 0
+
+		# Get the camera calibration
+		self.device_get_calibration(self.config.depth_mode,self.config.color_resolution,calibration)
+
+		# Create transformation
+		transformation_handle = self.transformation_create(calibration)
+
+		# Create the image handle		
+		transformed_depth_image_handle = _k4a.k4a_image_t()
+		self.image_create(image_format,image_width,image_height,image_stride,transformed_depth_image_handle)
+		
+		# Transform the depth image to the color image format
+		self.transformation_depth_image_to_color_camera(transformation_handle,input_depth_image_handle, transformed_depth_image_handle)
+
+		# Get transformed image data
+		transformed_image = self.image_convert_to_numpy(transformed_depth_image_handle)
+
+		# Close transformation 
+		self.transformation_destroy(transformation_handle)
+
+		return transformed_image
+
 
 	def image_release(self, image_handle):
 		"""Remove a reference from the k4a_image_t.

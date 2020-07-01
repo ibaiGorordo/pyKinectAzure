@@ -61,7 +61,7 @@ Bug reports are also appreciated. Please include as much details as possible.
 - [x] Example to visualize passive IR images.
 - [x] Example to plot IMU data.
 - [x] Example to visualize Depth as color image.
-- [ ] Example to overlay depth color with alpha over real image.
+- [x] Example to overlay depth color with alpha over real image.
 - [ ] Example to visualize 3D point cloud
 
 ### Body tracking
