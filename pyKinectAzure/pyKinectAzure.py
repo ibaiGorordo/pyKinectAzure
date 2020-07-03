@@ -2,7 +2,7 @@ import _k4a
 import numpy as np
 import cv2
 import sys
-
+import ctypes
 from config import config
 
 class pyKinectAzure:
@@ -66,6 +66,36 @@ class pyKinectAzure:
 		k4a_capture_release().
 		"""
 		self.k4a.k4a_device_close(self.device_handle)
+
+	def device_get_serialnum(self):
+		"""Get the Azure Kinect device serial number.
+
+		Parameters:
+		None
+			
+		Returns:
+		A return of ::K4A_BUFFER_RESULT_SUCCEEDED means that the serial_number has been filled in. If the buffer is too
+		small the function returns ::K4A_BUFFER_RESULT_TOO_SMALL and the size of the serial number is
+		returned in the serial_number_size parameter. All other failures return ::K4A_BUFFER_RESULT_FAILED.
+		
+		Remarks:
+		Queries the device for its serial number. If the caller needs to know the size of the serial number to allocate
+		memory, the function should be called once with a NULL serial_number to get the needed size in the 
+		serial_number_size output, and then again with the allocated buffer.
+
+		Only a complete serial number will be returned. If the caller's buffer is too small, the function will return
+		::K4A_BUFFER_RESULT_TOO_SMALL without returning any data in serial_number.
+		"""
+		# First call to get the size of the buffer
+		serial_number_size = ctypes.c_size_t()
+		result = self.k4a.k4a_device_get_serialnum(self.device_handle, None, serial_number_size)
+
+		if result == _k4a.K4A_BUFFER_RESULT_TOO_SMALL:
+			serial_number = ctypes.create_string_buffer(serial_number_size.value)
+
+		_k4a.VERIFY(self.k4a.k4a_device_get_serialnum(self.device_handle,serial_number,serial_number_size),"Read serial number failed!")
+
+		return serial_number.value.decode("utf-8") 
 
 	def device_start_cameras(self, device_config=None):
 		"""Starts color and depth camera capture.

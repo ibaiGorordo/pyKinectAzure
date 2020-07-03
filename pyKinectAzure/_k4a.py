@@ -279,10 +279,14 @@ class k4a:
 		self.k4a_device_stop_imu.restype=None
 		self.k4a_device_stop_imu.argtypes=(k4a_device_t,)
 
-		#K4A_EXPORT k4a_buffer_result_t k4a_device_get_serialnum(k4a_device_t device_handle,
+		"""
+		K4A_EXPORT k4a_buffer_result_t k4a_device_get_serialnum(k4a_device_t device_handle,
+																char *serial_number,
+                                                       			size_t *serial_number_size);
+        """
 		self.k4a_device_get_serialnum = dll.k4a_device_get_serialnum
 		self.k4a_device_get_serialnum.restype=k4a_buffer_result_t
-		self.k4a_device_get_serialnum.argtypes=(k4a_device_t,)
+		self.k4a_device_get_serialnum.argtypes=(k4a_device_t,ctypes.c_char_p,ctypes.POINTER(ctypes.c_size_t))
 
 		#K4A_EXPORT k4a_result_t k4a_device_get_version(k4a_device_t device_handle, k4a_hardware_version_t *version);
 		self.k4a_device_get_version = dll.k4a_device_get_version
