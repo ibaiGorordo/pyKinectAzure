@@ -1,5 +1,7 @@
 # pyKinectAzure
 
+![Azure kinect color and depth combination](https://github.com/ibaiGorordo/pyKinectAzure/blob/master/doc/images/Azure%20kinect%20depth%20and%20color%20combination.png)
+
 This complete library in Python 3 for the Azure-Kinect-Sensor-SDK.
 
 ## Similar solutions
