@@ -4,6 +4,7 @@ import cv2
 import sys
 import ctypes
 from config import config
+import postProcessing
 
 class pyKinectAzure:
 
