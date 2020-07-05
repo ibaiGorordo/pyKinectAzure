@@ -2,7 +2,7 @@
 
 ![Azure kinect color and depth combination](https://github.com/ibaiGorordo/pyKinectAzure/blob/master/doc/images/Azure%20kinect%20depth%20and%20color%20combination.png)
 
-This complete library in Python 3 for the Azure-Kinect-Sensor-SDK.
+Python 3 library for the Azure Kinect DK sensor-SDK.
 
 ## Similar solutions
 Part of the ideas in this repository are taken from following repositories:
@@ -33,13 +33,14 @@ The objective of this repository is to combine the strong points of both reposit
 
 ## Example
 
-For an example on how to obtain and visualize the video from the Kinect Azure check the **exampleColorImageOpenCV.py** script.
-
+For an example on how to obtain and visualize the smooth depth from the Azure Kinect DK check the **exampleSmoothDepthImageOpenCV.py** script.
 ```
 git clone https://github.com/ibaiGorordo/pyKinectAzure.git
 cd pyKinectAzure/examples
-python exampleColorImageOpenCV.py
+python exampleSmoothDepthImageOpenCV.py
 ```
+![Azure kinect color and depth combination](https://github.com/ibaiGorordo/pyKinectAzure/blob/master/doc/images/Azure%20kinect%20smoothed%20depth%20image.png)
+
 
 ## Contribution
 
