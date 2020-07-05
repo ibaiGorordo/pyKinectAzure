@@ -39,7 +39,7 @@ git clone https://github.com/ibaiGorordo/pyKinectAzure.git
 cd pyKinectAzure/examples
 python exampleSmoothDepthImageOpenCV.py
 ```
-![Azure kinect color and depth combination](https://github.com/ibaiGorordo/pyKinectAzure/blob/master/doc/images/Azure%20kinect%20smoothed%20depth%20image.png)
+![Azure kinect smoothed depth image comparison](https://github.com/ibaiGorordo/pyKinectAzure/blob/master/doc/images/Azure%20kinect%20smoothed%20depth%20image.png)
 
 
 ## Contribution
