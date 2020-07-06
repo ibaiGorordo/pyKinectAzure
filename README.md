@@ -31,12 +31,17 @@ The objective of this repository is to combine the strong points of both reposit
 
 
 
-## Example
+## Examples
 
-For an example on how to obtain and visualize the smooth depth from the Azure Kinect DK check the **exampleSmoothDepthImageOpenCV.py** script.
+For an example on how to obtain and visualize the depth data from the Azure Kinect DK check the **exampleDepthImageOpenCV.py** script.
 ```
 git clone https://github.com/ibaiGorordo/pyKinectAzure.git
 cd pyKinectAzure/examples
+python exampleDepthImageOpenCV.py
+```
+
+Also, there is an example to obtain and visualize the smooth depth from the Azure Kinect DK check the **exampleSmoothDepthImageOpenCV.py** script.
+```
 python exampleSmoothDepthImageOpenCV.py
 ```
 ![Azure kinect smoothed depth image comparison](https://github.com/ibaiGorordo/pyKinectAzure/blob/master/doc/images/Azure%20kinect%20smoothed%20depth%20image.png)
