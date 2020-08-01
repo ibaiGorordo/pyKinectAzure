@@ -46,6 +46,8 @@ Also, there is an example to obtain and visualize the smooth depth from the Azur
 ```
 python exampleSmoothDepthImageOpenCV.py
 ```
+> note: when you are dealing on the linux platform, please insure that the user have permission to the usb devices, or always execute under the root permission by adding `sudo` ahead.
+
 ![Azure kinect smoothed depth image comparison](https://github.com/ibaiGorordo/pyKinectAzure/blob/master/doc/images/Azure%20kinect%20smoothed%20depth%20image.png)
 
 
