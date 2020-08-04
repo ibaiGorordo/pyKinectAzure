@@ -5,11 +5,16 @@ import sys
 import ctypes
 from config import config
 import postProcessing
+import platform
 
 class pyKinectAzure:
 
-	def __init__(self,modulePath='C:\\Program Files\\Azure Kinect SDK v1.4.0\\sdk\\windows-desktop\\amd64\\release\\bin\\k4a.dll'):
-
+	def __init__(self,modulePath=None):
+		if modulePath is None:
+			if platform.system().lower() == 'linux':
+				modulePath = r'/usr/lib/x86_64-linux-gnu/libk4a.so'
+			else:
+				modulePath = 'C:\\Program Files\\Azure Kinect SDK v1.4.0\\sdk\\windows-desktop\\amd64\\release\\bin\\k4a.dll'
 		self.k4a = _k4a.k4a(modulePath)
 
 		self.device_handle = _k4a.k4a_device_t()
