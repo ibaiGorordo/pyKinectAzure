@@ -492,7 +492,7 @@ class pyKinectAzure:
 		image_format = self.image_get_format(image_handle)
 
 		# Read the data in the buffer
-		buffer_array = np.ctypeslib.as_array(buffer_pointer,shape=[image_size])
+		buffer_array = np.ctypeslib.as_array(buffer_pointer,shape=(image_size,))
 
 		# Parse buffer based on image format
 		if image_format == _k4a.K4A_IMAGE_FORMAT_COLOR_MJPG:
@@ -578,7 +578,7 @@ class pyKinectAzure:
 		self.device_get_imu_sample(timeout_in_ms)
 
 		# Read the raw data from the buffer pointer
-		buffer_array = np.array(np.ctypeslib.as_array(self.imu_sample,shape=[_k4a.IMU_SAMPLE_SIZE]).tolist())
+		buffer_array = np.array(np.ctypeslib.as_array(self.imu_sample,shape=(_k4a.IMU_SAMPLE_SIZE,)).tolist())
 
 		imu_results = self.imu_results
 		imu_results.temperature = buffer_array[0]
