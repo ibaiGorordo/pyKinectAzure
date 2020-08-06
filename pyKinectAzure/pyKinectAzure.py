@@ -253,6 +253,43 @@ class pyKinectAzure:
 		"""
 		_k4a.VERIFY(self.k4a.k4a_device_get_calibration(self.device_handle,depth_mode,color_resolution,calibration),"Get calibration failed!")
 
+	def get_readable_calibration(self, depth_mode, color_resolution):
+		"""Return a readable_calibration contains intrinsics matrix
+        Args:
+            depth_mode(k4a_depth_mode_t): Mode in which depth camera is operated.
+            color_resolution(k4a_color_resolution_t): Resolution in which color camera is operated.
+        Returns:
+            readable_calibration:
+                .depth_camera_calibration:
+                    .cx
+                    .cy
+                    .fx
+                    .fy
+                .color_camera_calibration:
+                    .cx
+                    .cy
+                    .fx
+                    .fy
+                .extrinsics:
+                .depth_camera_calibration_matrix: 3x3 numpy array
+                .color_camera_calibration_matrix: 3x3 numpy array
+        """
+		cal = _k4a.k4a_calibration_t()
+		self.device_get_calibration(depth_mode, color_resolution, cal)
+		return self.readable_calibration(cal)
+
+	class readable_calibration:
+		def __init__(self, cal):
+			self.depth_camera_calibration = cal.depth_camera_calibration.intrinsics.parameters.param
+			self.color_camera_calibration = cal.color_camera_calibration.intrinsics.parameters.param
+			self.depth_camera_calibration_matrix = np.array(
+				[[self.depth_camera_calibration.fx, 0, self.depth_camera_calibration.cx],
+				 [0, self.depth_camera_calibration.fy, self.depth_camera_calibration.cy], [0, 0, 1]], dtype=np.float32)
+			self.color_camera_calibration_matrix = np.array(
+				[[self.color_camera_calibration.fx, 0, self.color_camera_calibration.cx],
+				 [0, self.color_camera_calibration.fy, self.color_camera_calibration.cy], [0, 0, 1]], dtype=np.float32)
+			self.extrinsics = cal.extrinsics
+
 	def capture_get_color_image(self):
 		"""Get the color image associated with the given capture.
 
