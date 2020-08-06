@@ -8,11 +8,19 @@ class k4a:
 	def __init__(self,modulePath):
 		try: 
 			dll = ctypes.CDLL(modulePath)
+
 		except Exception as e:
+
+			if e.winerror == 193:
+				print("Failed to load library. \n\nChange the module path to the 32 bit version.")
+				sys.exit(1)
+
+			print(e, "\n\nFailed to lad Windows library. Trying to load Linux library...\n")
+
 			try:
 				dll = ctypes.CDLL('k4a.so')
 			except Exception as ee:
-				print("Failed to load library", e, ee)
+				print("Failed to load library", ee)
 				sys.exit(1)
 
 		#K4A_EXPORT uint32_t k4a_device_get_installed_count(void);
