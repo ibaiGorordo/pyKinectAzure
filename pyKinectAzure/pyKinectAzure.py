@@ -280,6 +280,8 @@ class pyKinectAzure:
 
 	class readable_calibration:
 		def __init__(self, cal):
+			
+			# Intrinsic matrix for the cameras
 			self.depth_camera_calibration = cal.depth_camera_calibration.intrinsics.parameters.param
 			self.color_camera_calibration = cal.color_camera_calibration.intrinsics.parameters.param
 			self.depth_camera_calibration_matrix = np.array(
@@ -288,7 +290,14 @@ class pyKinectAzure:
 			self.color_camera_calibration_matrix = np.array(
 				[[self.color_camera_calibration.fx, 0, self.color_camera_calibration.cx],
 				 [0, self.color_camera_calibration.fy, self.color_camera_calibration.cy], [0, 0, 1]], dtype=np.float32)
+			
+			# Extrinsics matrix between sensors
 			self.extrinsics = cal.extrinsics
+			self.depth_to_color_extrinsics_matrix = np.empty((4, 4))
+			self.depth_to_color_extrinsics_matrix[:3,:3] = np.array(self.extrinsics[_k4a.K4A_CALIBRATION_TYPE_DEPTH][_k4a.K4A_CALIBRATION_TYPE_COLOR].rotation, dtype=np.float32).reshape((3, 3))
+			self.depth_to_color_extrinsics_matrix[:3, 3] = np.array(self.extrinsics[_k4a.K4A_CALIBRATION_TYPE_DEPTH][_k4a.K4A_CALIBRATION_TYPE_COLOR].translation, dtype=np.float32)
+			self.depth_to_color_extrinsics_matrix[3, :] = [0, 0, 0, 1]
+
 
 	def capture_get_color_image(self):
 		"""Get the color image associated with the given capture.
