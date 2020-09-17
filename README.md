@@ -6,7 +6,7 @@ Python 3 library for the Azure Kinect DK sensor-SDK.
 
 ## Similar solutions
 Part of the ideas in this repository are taken from following repositories:
-* [pyk4a](https://github.com/etiennedub/pyk4a): Really nice and clean Python3 wrapper for the Kinect Azure SDK. Some features are still lacking such as inertial sensor data acquisition, skeleton tracking...
+* [pyk4a](https://github.com/etiennedub/pyk4a): Really nice and clean Python3 wrapper for the Kinect Azure SDK.
 
 * [Azure-Kinect-Python](https://github.com/hexops/Azure-Kinect-Python): More complete library using ctypes as in this repository, however, examples about how to use the library are missing and the library is harder to use.
 
