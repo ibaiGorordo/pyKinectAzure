@@ -7,7 +7,7 @@ import cv2
 
 # Path to the module
 # TODO: Modify with the path containing the k4a.dll from the Azure Kinect SDK
-modulePath = '/usr/lib/aarch64-linux-gnu/libk4a.so'  #Set path for libk4a.so library in Jetson
+modulePath = '/usr/lib/aarch64-linux-gnu/libk4a.so'  #set path for libk4a.so library in Jetson
 # under x86_64 linux please use r'/usr/lib/x86_64-linux-gnu/libk4a.so'
 
 if __name__ == "__main__":
@@ -40,14 +40,11 @@ if __name__ == "__main__":
 
 			# Read and convert the image data to numpy array:
 			depth_image = pyK4A.image_convert_to_numpy(depth_image_handle)
-
-			# Convert depth image (mm) to color, the range needs to be reduced down to the range (0,255)
-			depth_color_image = cv2.applyColorMap(np.round(depth_image/30).astype(np.uint8), cv2.COLORMAP_JET)
-
-			# Plot the image
+			depth_color_image = cv2.convertScaleAbs (depth_image, alpha=0.05)  #alpha is fitted by visual comparison with Azure k4aviewer results  
+			depth_color_image = cv2.applyColorMap(depth_color_image, cv2.COLORMAP_JET)
 			cv2.namedWindow('Colorized Depth Image',cv2.WINDOW_NORMAL)
 			cv2.imshow('Colorized Depth Image',depth_color_image)
-			k = cv2.waitKey(25)
+			k = cv2.waitKey(1)
 
 			# Release the image
 			pyK4A.image_release(depth_image_handle)
