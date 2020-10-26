@@ -23,11 +23,11 @@ The objective of this repository is to combine the strong points of both reposit
 
 * The library has **been tested in Windows 10 and Ubuntu 20.04** with the Kinect Azure SDK 1.4.0 and 1.4.1, it should also work with other operating systems.
 
-  - **Windows:** When using the pyKinectAzure class, it requires the **path to the k4a.dll module**, make sure that the path is the correct one for your Kinect Azure SDK version. By default the path is set to  ```C:\\Program Files\\Azure Kinect SDK v1.4.0\\sdk\\windows-desktop\\amd64\\release\\bin\\k4a.dll```.
+  - **Windows:** When using the pyKinectAzure class, it requires the **path to the k4a.dll module**, make sure that the path is the correct one for your Kinect Azure SDK version. By default the path (**module_path**) is set to  ```C:\\Program Files\\Azure Kinect SDK v1.4.0\\sdk\\windows-desktop\\amd64\\release\\bin\\k4a.dll```.
 
-  - **Linux:** When using the pyKinectAzure class, it requires the **path to the k4a.so module**, make sure that the path is the correct one for your Kinect Azure SDK version. When using Linux set module_path to  ```/usr/lib/x86_64-linux-gnu/libk4a.so```, please follow the [instruction](https://github.com/microsoft/Azure-Kinect-Sensor-SDK/blob/develop/docs/usage.md) from microsoft to install the right packages.
+  - **Linux:** When using the pyKinectAzure class, it requires the **path to the k4a.so module**, make sure that the path is the correct one for your Kinect Azure SDK version. When using Linux set **module_path** to  ```/usr/lib/x86_64-linux-gnu/libk4a.so```, please follow the [instruction](https://github.com/microsoft/Azure-Kinect-Sensor-SDK/blob/develop/docs/usage.md) from microsoft to install the right packages.
   
-   - **Nvidia Jetson:** When using the pyKinectAzure class, it requires the **path to the k4a.so module**, make sure that the path is the correct one for your Kinect Azure SDK version. When using Nvidia Jetson set module_path to to  ```'/usr/lib/aarch64-linux-gnu/libk4a.so'```, please follow the [instruction](https://github.com/microsoft/Azure-Kinect-Sensor-SDK/blob/develop/docs/usage.md) from microsoft to install the right packages.
+   - **Nvidia Jetson:** When using the pyKinectAzure class, it requires the **path to the k4a.so module**, make sure that the path is the correct one for your Kinect Azure SDK version. When using Nvidia Jetson set **module_path** to to  ```'/usr/lib/aarch64-linux-gnu/libk4a.so'```, please follow the [instruction](https://github.com/microsoft/Azure-Kinect-Sensor-SDK/blob/develop/docs/usage.md) from microsoft to install the right packages.
 
 * The **pyKinectAzure** class is a wrapper around the **_k4a.py** module to make the library more understandable. However, the **pyKinectAzure** class still contains few methods from the Kinect Azure SDK
 
