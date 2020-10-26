@@ -7,8 +7,8 @@ import cv2
 
 # Path to the module
 # TODO: Modify with the path containing the k4a.dll from the Azure Kinect SDK
-modulePath = 'C:\\Program Files\\Azure Kinect SDK v1.4.1\\sdk\\windows-desktop\\amd64\\release\\bin\\k4a.dll'
-# under linux please use r'/usr/lib/x86_64-linux-gnu/libk4a.so'
+modulePath = '/usr/lib/aarch64-linux-gnu/libk4a.so'  #set path for libk4a.so library in Jetson 
+# under x86_64 linux please use r'/usr/lib/x86_64-linux-gnu/libk4a.so'
 
 if __name__ == "__main__":
 
@@ -42,15 +42,13 @@ if __name__ == "__main__":
 
 			# Read and convert the image data to numpy array:
 			ir_image = pyK4A.image_convert_to_numpy(ir_image_handle)
-
+   
 			# Convert to 0-255 range and saturate over 4000 pixel value
-			image_to_show = ir_image*1
-			image_to_show[image_to_show>4000] = 4000
-			image_to_show = np.round(image_to_show/16).astype(np.uint8)
-
-			# Plot the image
+			image_to_show = ir_image
+			image_to_show[image_to_show>4000] = 4000 
+			image_to_show =cv2.convertScaleAbs(image_to_show, alpha=0.4)  #alpha is fitted by visual comparison with Azure k4aviewer results     
 			cv2.imshow('Infrared Image',image_to_show)
-			k = cv2.waitKey(25)
+			k = cv2.waitKey(1)  
 
 			# Release the image
 			pyK4A.image_release(ir_image_handle)
