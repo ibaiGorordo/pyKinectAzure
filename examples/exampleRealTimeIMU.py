@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 # TODO: Modify with the path containing the k4a.dll from the Azure Kinect SDK
 modulePath = 'C:\\Program Files\\Azure Kinect SDK v1.4.1\\sdk\\windows-desktop\\amd64\\release\\bin\\k4a.dll' 
 # under x86_64 linux please use r'/usr/lib/x86_64-linux-gnu/libk4a.so'
-# In Jetson please use r'/usr/lib/x86_64-linux-gnu/libk4a.so'
+# In Jetson please use r'/usr/lib/aarch64-linux-gnu/libk4a.so'
 
 def handle_close(evt):
 	global keep_running
