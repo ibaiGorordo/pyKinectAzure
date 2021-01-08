@@ -65,7 +65,7 @@ if __name__ == "__main__":
 			body_image = pyK4A.image_convert_to_numpy(pyK4ABT.segmented_body_img).astype(np.uint8)
 			body_image_color = np.dstack([cv2.LUT(body_image, colors[:,i]) for i in range(3)])
 
-			combined_image = cv2.addWeighted(depth_color_image, 0.5, body_image_color, 0.5, 0)
+			combined_image = cv2.addWeighted(depth_color_image, 0.8, body_image_color, 0.2, 0)
 
 			# Overlay body segmentation on depth image
 			cv2.imshow('Segmented Depth Image',combined_image)
