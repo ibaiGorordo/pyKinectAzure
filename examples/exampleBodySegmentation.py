@@ -7,7 +7,7 @@ from pyKinectAzure import pyKinectAzure, _k4a
 from kinectBodyTracker import kinectBodyTracker, _k4abt
 import cv2
 
-colors = np.ones((256,4), dtype=np.uint8)
+colors = np.ones((256,4), dtype=np.uint8)*255
 colors[:3,:] = np.array([[202, 183, 42, 255], [42, 202, 183, 255], [183, 42, 202, 255]]) 
 
 # Path to the module
