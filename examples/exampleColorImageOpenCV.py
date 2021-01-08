@@ -44,7 +44,7 @@ if __name__ == "__main__":
 			# Plot the image
 			cv2.namedWindow('Color Image',cv2.WINDOW_NORMAL)
 			cv2.imshow("Color Image",color_image)
-			k = cv2.waitKey(20)
+			k = cv2.waitKey(1)
 
 			# Release the image
 			pyK4A.image_release(color_image_handle)

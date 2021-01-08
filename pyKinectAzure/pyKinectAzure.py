@@ -509,6 +509,8 @@ class pyKinectAzure:
 			return np.frombuffer(buffer_array, dtype="<u2").reshape(image_height,image_width)#little-endian 16 bits unsigned Depth data
 		elif image_format == _k4a.K4A_IMAGE_FORMAT_IR16:
 			return np.frombuffer(buffer_array, dtype="<u2").reshape(image_height,image_width)#little-endian 16 bits unsigned IR data. For more details see: https://microsoft.github.io/Azure-Kinect-Sensor-SDK/release/1.2.x/namespace_microsoft_1_1_azure_1_1_kinect_1_1_sensor_a7a3cb7a0a3073650bf17c2fef2bfbd1b.html
+		elif image_format == _k4a.K4A_IMAGE_FORMAT_CUSTOM8:
+			return np.frombuffer(buffer_array, dtype="<u1").reshape(image_height,image_width)
 
 	def transform_depth_to_color(self,input_depth_image_handle, color_image_handle):
 		calibration = _k4a.k4a_calibration_t()
@@ -540,6 +542,9 @@ class pyKinectAzure:
 
 		return transformed_image
 
+	def getDepthSensorCalibration(self, calibration):
+
+		self.device_get_calibration(self.config.depth_mode, self.config.color_resolution, calibration)
 
 	def image_release(self, image_handle):
 		"""Remove a reference from the k4a_image_t.
