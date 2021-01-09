@@ -1,5 +1,6 @@
 from _k4atypes import k4a_float3_t, k4a_calibration_t, k4a_capture_t, k4a_image_t
 import ctypes
+import numpy as np
 
 # K4A_DECLARE_HANDLE(k4abt_tracker_t);
 class _handle_k4abt_tracker_t(ctypes.Structure):
@@ -122,3 +123,6 @@ K4ABT_TRACKER_CONFIG_DEFAULT = k4abt_tracker_configuration_t()
 K4ABT_TRACKER_CONFIG_DEFAULT.sensor_orientation = K4ABT_SENSOR_ORIENTATION_DEFAULT
 K4ABT_TRACKER_CONFIG_DEFAULT.processing_mode = K4ABT_TRACKER_PROCESSING_MODE_GPU
 K4ABT_TRACKER_CONFIG_DEFAULT.gpu_device_id = 0
+
+body_colors = np.ones((256,3), dtype=np.uint8)*K4ABT_BODY_INDEX_MAP_BACKGROUND
+body_colors[:7,:] = np.array([[202, 183, 42], [42, 61, 202], [42, 202, 183], [202, 42,61], [183, 42, 202], [42, 202, 61], [141, 202, 42]]) 

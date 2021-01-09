@@ -7,9 +7,6 @@ from pyKinectAzure import pyKinectAzure, _k4a
 from kinectBodyTracker import kinectBodyTracker, _k4abt
 import cv2
 
-colors = np.ones((256,3), dtype=np.uint8)*_k4abt.K4ABT_BODY_INDEX_MAP_BACKGROUND
-colors[:3,:] = np.array([[202, 183, 42], [42, 202, 183], [183, 42, 202]]) 
-
 # Path to the module
 # TODO: Modify with the path containing the k4a.dll from the Azure Kinect SDK
 modulePath = 'C:\\Program Files\\Azure Kinect SDK v1.4.1\\sdk\\windows-desktop\\amd64\\release\\bin\\k4a.dll' 
@@ -34,12 +31,8 @@ if __name__ == "__main__":
 	# Start cameras using modified configuration
 	pyK4A.device_start_cameras(device_config)
 
-	# Get depth sensor calibration
-	depthSensorCalibration = _k4a.k4a_calibration_t()
-	pyK4A.getDepthSensorCalibration(depthSensorCalibration)
-
 	# Initialize the body tracker
-	pyK4ABT = kinectBodyTracker(bodyTrackingModulePath, pyK4A.k4a, depthSensorCalibration)
+	pyK4A.bodyTracker_start(bodyTrackingModulePath)
 
 	k = 0
 	while True:
@@ -49,26 +42,24 @@ if __name__ == "__main__":
 		# Get the depth image from the capture
 		depth_image_handle = pyK4A.capture_get_depth_image()
 
-		# Add capture to the body tracker processing queue
-		pyK4ABT.enqueue_capture(pyK4A.capture_handle)
 
 		# Check the image has been read correctly
 		if depth_image_handle:
 
 			# Perform body detection
-			pyK4ABT.detectBodies()
+			pyK4A.bodyTracker_update()
 
 			# Get the information of each body
-			for body in pyK4ABT.bodiesNow:
-				pyK4ABT.printBodyPosition(body)
+			for body in pyK4A.body_tracker.bodiesNow:
+				pyK4A.body_tracker.printBodyPosition(body)
 
 			# Read and convert the image data to numpy array:
 			depth_image = pyK4A.image_convert_to_numpy(depth_image_handle)
 			depth_color_image = cv2.convertScaleAbs (depth_image, alpha=0.05)  #alpha is fitted by visual comparison with Azure k4aviewer results 
 			depth_color_image = cv2.cvtColor(depth_color_image, cv2.COLOR_GRAY2RGB) 
 
-			body_image = pyK4A.image_convert_to_numpy(pyK4ABT.segmented_body_img).astype(np.uint8)
-			body_image_color = np.dstack([cv2.LUT(body_image, colors[:,i]) for i in range(3)])
+			# Get body segmentation image
+			body_image_color = pyK4A.bodyTracker_get_body_segmentation()
 
 			combined_image = cv2.addWeighted(depth_color_image, 0.8, body_image_color, 0.2, 0)
 
@@ -78,10 +69,10 @@ if __name__ == "__main__":
 
 			# Release the image
 			pyK4A.image_release(depth_image_handle)
-			pyK4A.image_release(pyK4ABT.segmented_body_img)
+			pyK4A.image_release(pyK4A.body_tracker.segmented_body_img)
 
 		pyK4A.capture_release()
-		pyK4ABT.release_frame()
+		pyK4A.body_tracker.release_frame()
 
 		if k==27:    # Esc key to stop
 			break

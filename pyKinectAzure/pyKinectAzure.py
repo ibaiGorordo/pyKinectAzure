@@ -1,4 +1,5 @@
 import _k4a
+from kinectBodyTracker import kinectBodyTracker, _k4abt
 import numpy as np
 import cv2
 import sys
@@ -24,6 +25,31 @@ class pyKinectAzure:
 
 		self.cameras_running = False
 		self.imu_running = False
+
+	def bodyTracker_start(self, bodyTrackerModulePath):
+		# Get depth sensor calibration
+		depthSensorCalibration = _k4a.k4a_calibration_t()
+		self.getDepthSensorCalibration(depthSensorCalibration)
+
+		# Initialize the body tracker
+		self.body_tracker = kinectBodyTracker(bodyTrackerModulePath,  depthSensorCalibration)
+
+	def bodyTracker_update(self):
+
+		# Add capture to the body tracker processing queue
+		self.body_tracker.enqueue_capture(self.capture_handle)
+
+		# Perform body detection
+		self.body_tracker.detectBodies()
+
+	def bodyTracker_get_body_segmentation(self):
+		# Get the body segmentation image
+		body_image = self.image_convert_to_numpy(self.body_tracker.segmented_body_img).astype(np.uint8)
+
+		# Add color to the segmentation based on the id value of each pixel
+		body_image_color = np.dstack([cv2.LUT(body_image, _k4abt.body_colors[:,i]) for i in range(3)])
+
+		return body_image_color
 
 	def device_get_installed_count(self):
 		"""Gets the number of connected devices
