@@ -43,9 +43,15 @@ class kinectBodyTracker:
 			for bodyIdx in range(num_bodies):
 				body = _k4abt.k4abt_body_t()
 				body.skeleton = self.get_body_skeleton(bodyIdx);
-				body.id = get_body_id(bodyIdx);
+				body.id = self.get_body_id(bodyIdx);
 
 				self.bodiesNow.append(body)
+
+	def printBodyPosition(self, body):
+		print(f"BodyId: {body.id}", \
+			  f"X: {body.skeleton.joints[_k4abt.K4ABT_JOINT_SPINE_NAVEL].position.v[0]:.2f} mm", \
+			  f"Y: {body.skeleton.joints[_k4abt.K4ABT_JOINT_SPINE_NAVEL].position.v[1]:.2f} mm", \
+			  f"Z: {body.skeleton.joints[_k4abt.K4ABT_JOINT_SPINE_NAVEL].position.v[2]:.2f} mm")        
 
 	def initializeTracker(self):
 		"""Initialize the body tracker

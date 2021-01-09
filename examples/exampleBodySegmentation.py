@@ -7,8 +7,8 @@ from pyKinectAzure import pyKinectAzure, _k4a
 from kinectBodyTracker import kinectBodyTracker, _k4abt
 import cv2
 
-colors = np.ones((256,4), dtype=np.uint8)*255
-colors[:3,:] = np.array([[202, 183, 42, 255], [42, 202, 183, 255], [183, 42, 202, 255]]) 
+colors = np.ones((256,3), dtype=np.uint8)*_k4abt.K4ABT_BODY_INDEX_MAP_BACKGROUND
+colors[:3,:] = np.array([[202, 183, 42], [42, 202, 183], [183, 42, 202]]) 
 
 # Path to the module
 # TODO: Modify with the path containing the k4a.dll from the Azure Kinect SDK
@@ -39,7 +39,7 @@ if __name__ == "__main__":
 	pyK4A.getDepthSensorCalibration(depthSensorCalibration)
 
 	# Initialize the body tracker
-	pyK4ABT = kinectBodyTracker(bodyTrackingModulePath, depthSensorCalibration)
+	pyK4ABT = kinectBodyTracker(bodyTrackingModulePath, pyK4A.k4a, depthSensorCalibration)
 
 	k = 0
 	while True:
@@ -55,7 +55,12 @@ if __name__ == "__main__":
 		# Check the image has been read correctly
 		if depth_image_handle:
 
+			# Perform body detection
 			pyK4ABT.detectBodies()
+
+			# Get the information of each body
+			for body in pyK4ABT.bodiesNow:
+				pyK4ABT.printBodyPosition(body)
 
 			# Read and convert the image data to numpy array:
 			depth_image = pyK4A.image_convert_to_numpy(depth_image_handle)

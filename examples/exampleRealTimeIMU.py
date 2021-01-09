@@ -52,7 +52,7 @@ if __name__ == "__main__":
 
 			ax1.plot(time_mat/1e6,acc_mat)
 			ax2.plot(time_mat/1e6,gyro_mat)
-			plt.pause(0.1)
+			plt.pause(0.01)
 			ax1.cla()
 			ax2.cla()
 
