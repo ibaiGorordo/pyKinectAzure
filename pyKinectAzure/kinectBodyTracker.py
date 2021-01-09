@@ -199,12 +199,12 @@ class kinectBodyTracker:
 		k4abt_frame_t* body_frame_handle: Handle to a body frame object returned by k4abt_tracker_pop_result function.
 		
 		Returns:
-		None
+		uint32_t number_of_bodies: Returns the number of detected bodies. 0 if the function fails.
 
 		Remarks:
 		Called when the user has received a body frame handle and wants to access the data contained in it.
 		"""
-		self.k4abt.k4abt_frame_get_num_bodies(self.body_frame_handle)
+		return self.k4abt.k4abt_frame_get_num_bodies(self.body_frame_handle)
 
 	def get_body_skeleton(self, index=0):
 		"""Get the joint information for a particular person index from the k4abt_frame_t
