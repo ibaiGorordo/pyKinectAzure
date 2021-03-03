@@ -1,4 +1,4 @@
-from _k4atypes import k4a_float3_t, k4a_calibration_t, k4a_capture_t, k4a_image_t
+from _k4atypes import k4a_float3_t, k4a_float2_t, k4a_calibration_t, k4a_capture_t, k4a_image_t
 import ctypes
 import numpy as np
 
@@ -53,7 +53,39 @@ K4ABT_JOINT_EYE_LEFT = 28
 K4ABT_JOINT_EAR_LEFT = 29
 K4ABT_JOINT_EYE_RIGHT = 30
 K4ABT_JOINT_EAR_RIGHT = 31
-K4ABT_JOINT_COUNT = 33
+K4ABT_JOINT_COUNT = 32
+
+K4ABT_SEGMENT_PAIRS = [[1, 0], 
+                       [2, 1], 
+                       [3, 2], 
+                       [4, 2], 
+                       [5, 4], 
+                       [6, 5], 
+                       [7, 6], 
+                       [8, 7], 
+                       [9, 8],
+                       [10, 7], 
+                       [11, 2], 
+                       [12, 11], 
+                       [13, 12], 
+                       [14, 13], 
+                       [15, 14], 
+                       [16, 15], 
+                       [17, 14], 
+                       [18, 0], 
+                       [19, 18],
+                       [20, 19], 
+                       [21, 20], 
+                       [22, 0], 
+                       [23, 22], 
+                       [24, 23], 
+                       [25, 24], 
+                       [26, 3], 
+                       [27, 26],
+                       [28, 26], 
+                       [29, 26], 
+                       [30, 26], 
+                       [31, 26]]
 
 #class k4abt_sensor_orientation_t(CtypeIntEnum):
 K4ABT_SENSOR_ORIENTATION_DEFAULT = 0
@@ -113,6 +145,25 @@ class k4abt_body_t(ctypes.Structure):
         ("id", ctypes.c_uint32),
         ("skeleton", k4abt_skeleton_t),
     ]
+
+class _k4abt_joint2D_t(ctypes.Structure):
+    _fields_= [
+        ("position", k4a_float2_t),
+        ("confidence_level", ctypes.c_int),
+    ]
+k4abt_joint2D_t = _k4abt_joint2D_t
+
+class k4abt_skeleton2D_t(ctypes.Structure):
+    _fields_= [
+        ("joints2D", _k4abt_joint2D_t * K4ABT_JOINT_COUNT),
+    ]
+
+class k4abt_body2D_t(ctypes.Structure):
+    _fields_= [
+        ("id", ctypes.c_uint32),
+        ("skeleton", k4abt_skeleton2D_t),
+    ]
+
 
 K4ABT_BODY_INDEX_MAP_BACKGROUND = 255
 K4ABT_INVALID_BODY_ID = 0xFFFFFFFF

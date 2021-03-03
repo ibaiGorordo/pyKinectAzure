@@ -49,7 +49,6 @@ if __name__ == "__main__":
 			# Perform body detection
 			pyK4A.bodyTracker_update()
 
-
 			# Read and convert the image data to numpy array:
 			depth_image = pyK4A.image_convert_to_numpy(depth_image_handle)
 			depth_color_image = cv2.convertScaleAbs (depth_image, alpha=0.05)  #alpha is fitted by visual comparison with Azure k4aviewer results 
@@ -59,6 +58,11 @@ if __name__ == "__main__":
 			body_image_color = pyK4A.bodyTracker_get_body_segmentation()
 
 			combined_image = cv2.addWeighted(depth_color_image, 0.8, body_image_color, 0.2, 0)
+
+			# Draw the skeleton
+			for body in pyK4A.body_tracker.bodiesNow:
+				skeleton2D = pyK4A.bodyTracker_project_skeleton(body.skeleton)
+				combined_image = pyK4A.body_tracker.draw2DSkeleton(skeleton2D, body.id, combined_image)
 
 			# Overlay body segmentation on depth image
 			cv2.imshow('Segmented Depth Image',combined_image)
@@ -73,6 +77,8 @@ if __name__ == "__main__":
 
 		if k==27:    # Esc key to stop
 			break
+		elif k == ord('q'):
+			cv2.imwrite('outputImage.jpg',combined_image)
 
 	pyK4A.device_stop_cameras()
 	pyK4A.device_close()

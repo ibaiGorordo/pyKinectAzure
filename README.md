@@ -1,6 +1,6 @@
 # pyKinectAzure
 
-![Azure kinect color and depth combination](https://github.com/ibaiGorordo/pyKinectAzure/blob/master/doc/images/Azure%20kinect%20depth%20and%20color%20combination.png)
+![Azure kinect color and depth combination](https://github.com/ibaiGorordo/pyKinectAzure/blob/master/doc/images/outputImage.jpg)
 
 Python 3 library for the Azure Kinect DK sensor-SDK.
 
@@ -77,8 +77,8 @@ Bug reports are also appreciated. Please include as much details as possible.
 - [ ] Example to visualize 3D point cloud
 
 ### Body tracking
-- [ ] Create library for the body tracking SDK similar the same way as the current library.
-- [ ] Combine image and skeleton data.
+- [x] Create library for the body tracking SDK similar the same way as the current library.
+- [x] Combine image and skeleton data.
 - [ ] Generate 3D skeleton visualization.
 
 ### Future ideas

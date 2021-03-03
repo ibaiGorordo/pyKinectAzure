@@ -51,7 +51,22 @@ class kinectBodyTracker:
 		print(f"BodyId: {body.id}", \
 			  f"X: {body.skeleton.joints[_k4abt.K4ABT_JOINT_SPINE_NAVEL].position.v[0]:.2f} mm", \
 			  f"Y: {body.skeleton.joints[_k4abt.K4ABT_JOINT_SPINE_NAVEL].position.v[1]:.2f} mm", \
-			  f"Z: {body.skeleton.joints[_k4abt.K4ABT_JOINT_SPINE_NAVEL].position.v[2]:.2f} mm")        
+			  f"Z: {body.skeleton.joints[_k4abt.K4ABT_JOINT_SPINE_NAVEL].position.v[2]:.2f} mm") 
+
+	def draw2DSkeleton(self, skeleton2D, bodyId, image):
+		color = _k4abt.body_colors
+		for joint in skeleton2D.joints2D:
+			image = cv2.circle(image, (int(joint.position.v[0]), int(joint.position.v[1])), 3, (255,0,0), 3)
+
+		for segmentId in range(len(_k4abt.K4ABT_SEGMENT_PAIRS)):
+			point1 = skeleton2D.joints2D[_k4abt.K4ABT_SEGMENT_PAIRS[segmentId][0]].position.v
+			point2 = skeleton2D.joints2D[_k4abt.K4ABT_SEGMENT_PAIRS[segmentId][1]].position.v
+			image = cv2.line(
+                image, (int(point1[0]), int(point1[1])), (int(point2[0]), int(point2[1])),
+                (255,0,0), 2
+            )
+
+		return image
 
 	def initializeTracker(self):
 		"""Initialize the body tracker
