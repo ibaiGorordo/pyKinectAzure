@@ -173,6 +173,9 @@ K4ABT_BODY_INDEX_MAP_BACKGROUND = 255
 K4ABT_INVALID_BODY_ID = 0xFFFFFFFF
 K4ABT_DEFAULT_TRACKER_SMOOTHING_FACTOR = 0.0
 
+K4ABT_DEFAULT_MODEL = 0
+K4ABT_LITE_MODEL = 1
+
 # TODO(Andoryuuta): Not sure if a single instance of the default config like this will work, might need a creation function.
 K4ABT_TRACKER_CONFIG_DEFAULT = k4abt_tracker_configuration_t()
 K4ABT_TRACKER_CONFIG_DEFAULT.sensor_orientation = K4ABT_SENSOR_ORIENTATION_DEFAULT

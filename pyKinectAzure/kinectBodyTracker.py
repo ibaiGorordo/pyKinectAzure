@@ -10,10 +10,17 @@ import platform
 
 class kinectBodyTracker:
 
-	def __init__(self, modulePath, sensor_calibration):
+	def __init__(self, modulePath, sensor_calibration, modelType):
 		self.k4abt = _k4abt.k4abt(modulePath)
 
 		self.tracker_handle = _k4abt.k4abt_tracker_t()	
+		if modelType == 1:
+			try: 
+				_k4abt.K4ABT_TRACKER_CONFIG_DEFAULT.model_path = "C:/Program Files/Azure Kinect Body Tracking SDK/sdk/windows-desktop/amd64/release/bin/dnn_model_2_0_lite_op11.onnx".encode('utf-8')
+			except Exception as e:
+				print("Failed to find lite model. Check that you are using Body Tracker version 1.1.0\n")
+				print("Switching to the original body tracking model\n\n\n")
+			
 		self.tracker_config = _k4abt.K4ABT_TRACKER_CONFIG_DEFAULT
 		self.body_frame_handle = _k4abt.k4abt_frame_t()
 		self.segmented_body_img = _k4a.k4a_image_t()
