@@ -179,7 +179,7 @@ K4ABT_LITE_MODEL = 1
 # TODO(Andoryuuta): Not sure if a single instance of the default config like this will work, might need a creation function.
 K4ABT_TRACKER_CONFIG_DEFAULT = k4abt_tracker_configuration_t()
 K4ABT_TRACKER_CONFIG_DEFAULT.sensor_orientation = K4ABT_SENSOR_ORIENTATION_DEFAULT
-K4ABT_TRACKER_CONFIG_DEFAULT.processing_mode = K4ABT_TRACKER_PROCESSING_MODE_GPU_CUDA
+K4ABT_TRACKER_CONFIG_DEFAULT.processing_mode = K4ABT_TRACKER_PROCESSING_MODE_GPU
 K4ABT_TRACKER_CONFIG_DEFAULT.gpu_device_id = 0
 
 body_colors = np.ones((256,3), dtype=np.uint8)*K4ABT_BODY_INDEX_MAP_BACKGROUND

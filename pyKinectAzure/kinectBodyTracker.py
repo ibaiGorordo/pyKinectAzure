@@ -4,6 +4,7 @@ import numpy as np
 import cv2
 import sys
 import ctypes
+from ctypes import cdll
 from config import config
 import postProcessing
 import platform
@@ -12,6 +13,11 @@ class kinectBodyTracker:
 
 	def __init__(self, modulePath, sensor_calibration, modelType):
 		self.k4abt = _k4abt.k4abt(modulePath)
+
+		try:
+			mydll = cdll.LoadLibrary("C:/Program Files/Azure Kinect Body Tracking SDK/tools/directml.dll")
+		except Exception as e:
+			_k4abt.K4ABT_TRACKER_CONFIG_DEFAULT.processing_mode  = _k4abt.K4ABT_TRACKER_PROCESSING_MODE_GPU_CUDA
 
 		self.tracker_handle = _k4abt.k4abt_tracker_t()	
 		if modelType == 1:
