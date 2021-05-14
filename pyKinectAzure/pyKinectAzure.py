@@ -1,5 +1,6 @@
 import _k4a
 import _k4arecord
+import record
 from kinectBodyTracker import kinectBodyTracker, _k4abt
 import numpy as np
 import cv2
@@ -17,16 +18,25 @@ class pyKinectAzure:
 				modulePath = r'/usr/lib/x86_64-linux-gnu/libk4a.so'
 			else:
 				modulePath = 'C:\\Program Files\\Azure Kinect SDK v1.4.0\\sdk\\windows-desktop\\amd64\\release\\bin\\k4a.dll'
+		self.modulePath = modulePath
 		self.k4a = _k4a.k4a(modulePath)
-		self.k4arecord = _k4arecord.k4arecord(modulePath)
-
 		self.device_handle = _k4a.k4a_device_t()
 		self.capture_handle = _k4a.k4a_capture_t()	
 		self.config = config()
 		self.imu_sample = _k4a.k4a_imu_sample_t()
-
 		self.cameras_running = False
 		self.imu_running = False
+		self.recording = False
+
+	def update(self):
+
+		# Get capture
+		self.device_get_capture()
+
+		# Write capture if recording
+		if self.recording:
+			self.write_frame()
+
 
 	def bodyTracker_start(self, bodyTrackerModulePath, modelType = _k4abt.K4ABT_DEFAULT_MODEL):
 		# Get depth sensor calibration
@@ -648,6 +658,16 @@ class pyKinectAzure:
 
 		return imu_results
 
+	def start_recording(self, filepath="output.mkv"):
+		self.record = record.record(self.modulePath, self.device_handle, self.config.current_config, filepath)
+		self.recording = True
+
+	def stop_recording(self):
+		self.record = None
+		self.recording = False
+
+	def write_frame(self):
+		self.record.write_capture(self.capture_handle)
 
 	class imu_results:
 		def __init__(self):
