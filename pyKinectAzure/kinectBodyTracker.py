@@ -15,7 +15,7 @@ class kinectBodyTracker:
 		self.k4abt = _k4abt.k4abt(modulePath)
 
 		try:
-			mydll = cdll.LoadLibrary("C:/Program Files/Azure Kinect Body Tracking SDK/tools/directml.dll")
+			cdll.LoadLibrary("C:/Program Files/Azure Kinect Body Tracking SDK/tools/directml.dll")
 		except Exception as e:
 			_k4abt.K4ABT_TRACKER_CONFIG_DEFAULT.processing_mode  = _k4abt.K4ABT_TRACKER_PROCESSING_MODE_GPU_CUDA
 

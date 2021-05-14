@@ -15,7 +15,7 @@ class k4a:
 				print("Failed to load library. \n\nChange the module path to the 32 bit version.")
 				sys.exit(1)
 
-			print(e, "\n\nFailed to lad Windows library. Trying to load Linux library...\n")
+			print(e, "\n\nFailed to load Windows library. Trying to load Linux library...\n")
 
 			try:
 				dll = ctypes.CDLL('k4a.so')
