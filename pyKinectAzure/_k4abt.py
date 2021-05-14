@@ -3,26 +3,14 @@ import sys
 from _k4abtTypes import *
 import traceback
 
+_library_handle = None
+
 class k4abt:
 
-	def __init__(self,modulePath):
-		try: 
-			dll = ctypes.CDLL(modulePath)
+	def __init__(self):
 
-		except Exception as e:
-
-			if e.winerror == 193:
-				print("Failed to load library. \n\nChange the module path to the 32 bit version.")
-				sys.exit(1)
-
-			print(e, "\n\nFailed to lad Windows library. Trying to load Linux library...\n")
-
-			try:
-				dll = ctypes.CDLL('k4abt.so')
-			except Exception as ee:
-				print("Failed to load library", ee)
-				sys.exit(1)
-
+		dll = _library_handle
+		
 		"""
 		K4ABT_EXPORT k4a_result_t k4abt_tracker_create(const k4a_calibration_t* sensor_calibration,
                                                 k4abt_tracker_configuration_t config,
@@ -100,6 +88,28 @@ class k4abt:
 		self.k4abt_frame_get_capture = dll.k4abt_frame_get_capture
 		self.k4abt_frame_get_capture.restype=k4a_capture_t
 		self.k4abt_frame_get_capture.argtypes=(k4abt_frame_t,)
+
+	@staticmethod
+	def setup_library(modulePath):
+
+		global _library_handle
+
+		try: 
+			_library_handle = ctypes.CDLL(modulePath)
+
+		except Exception as e:
+
+			if e.winerror == 193:
+				print("Failed to load library. \n\nChange the module path to the 32 bit version.")
+				sys.exit(1)
+
+			print(e, "\n\nFailed to load Windows library. Trying to load Linux library...\n")
+
+			try:
+				_library_handle = ctypes.CDLL('k4abt.so')
+			except Exception as ee:
+				print("Failed to load library", ee)
+				sys.exit(1)
 
 def VERIFY(result, error):
 	if result != K4ABT_RESULT_SUCCEEDED:

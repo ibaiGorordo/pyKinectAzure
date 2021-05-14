@@ -3,25 +3,14 @@ import sys
 from _k4atypes import *
 import traceback
 
+
+_library_handle = None
+
 class k4a:
 
-	def __init__(self,modulePath):
-		try: 
-			dll = ctypes.CDLL(modulePath)
+	def __init__(self):
 
-		except Exception as e:
-
-			if e.winerror == 193:
-				print("Failed to load library. \n\nChange the module path to the 32 bit version.")
-				sys.exit(1)
-
-			print(e, "\n\nFailed to load Windows library. Trying to load Linux library...\n")
-
-			try:
-				dll = ctypes.CDLL('k4a.so')
-			except Exception as ee:
-				print("Failed to load library", ee)
-				sys.exit(1)
+		dll = _library_handle
 
 		#K4A_EXPORT uint32_t k4a_device_get_installed_count(void);
 		self.k4a_device_get_installed_count = dll.k4a_device_get_installed_count
@@ -564,6 +553,28 @@ class k4a:
 																	k4a_calibration_type_t,\
 																	k4a_image_t,\
 																	)
+	@staticmethod
+	def setup_library(modulePath):
+
+		global _library_handle
+
+		try: 
+			_library_handle = ctypes.CDLL(modulePath)
+
+		except Exception as e:
+
+			if e.winerror == 193:
+				print("Failed to load library. \n\nChange the module path to the 32 bit version.")
+				sys.exit(1)
+
+			print(e, "\n\nFailed to load Windows library. Trying to load Linux library...\n")
+
+			try:
+				_library_handle = ctypes.CDLL('k4a.so')
+			except Exception as ee:
+				print("Failed to load library", ee)
+				sys.exit(1)
+
 def VERIFY(result, error):
 	if result != K4A_RESULT_SUCCEEDED:
 		print(error)

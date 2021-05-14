@@ -12,7 +12,9 @@ import platform
 class kinectBodyTracker:
 
 	def __init__(self, modulePath, sensor_calibration, modelType):
-		self.k4abt = _k4abt.k4abt(modulePath)
+
+		_k4abt.k4abt.setup_library(modulePath)
+		self.k4abt = _k4abt.k4abt()
 
 		try:
 			cdll.LoadLibrary("C:/Program Files/Azure Kinect Body Tracking SDK/tools/directml.dll")
