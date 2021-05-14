@@ -1,4 +1,5 @@
 import _k4a
+import _k4arecord
 from kinectBodyTracker import kinectBodyTracker, _k4abt
 import numpy as np
 import cv2
@@ -17,6 +18,7 @@ class pyKinectAzure:
 			else:
 				modulePath = 'C:\\Program Files\\Azure Kinect SDK v1.4.0\\sdk\\windows-desktop\\amd64\\release\\bin\\k4a.dll'
 		self.k4a = _k4a.k4a(modulePath)
+		self.k4arecord = _k4arecord.k4arecord(modulePath)
 
 		self.device_handle = _k4a.k4a_device_t()
 		self.capture_handle = _k4a.k4a_capture_t()	
