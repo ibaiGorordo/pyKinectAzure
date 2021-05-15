@@ -19,7 +19,8 @@ class pyKinectAzure:
 			else:
 				modulePath = 'C:\\Program Files\\Azure Kinect SDK v1.4.0\\sdk\\windows-desktop\\amd64\\release\\bin\\k4a.dll'
 		self.modulePath = modulePath
-		self.k4a = _k4a.k4a(modulePath)
+		_k4a.k4a.setup_library(modulePath)
+		self.k4a = _k4a.k4a()
 		self.device_handle = _k4a.k4a_device_t()
 		self.capture_handle = _k4a.k4a_capture_t()	
 		self.config = config()
