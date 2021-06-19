@@ -1,5 +1,6 @@
 import _k4a
 import _k4arecord
+import _k4atypes
 import record
 from kinectBodyTracker import kinectBodyTracker, _k4abt
 import numpy as np
@@ -514,6 +515,37 @@ class pyKinectAzure:
 		"""
 
 		self.k4a.k4a_transformation_destroy(transformation_handle)
+
+	def transform_depth_image_to_point_cloud(self, depth_image_handle: _k4a.k4a_image_t):
+		"""Transforms the depth map to point clouds
+
+		Parameters:
+		depth_image_handle (k4a_image_t): Handle to the Image
+
+		Returns:
+		point_cloud (k4a_image_t): Handle to point cloud
+		"""
+		calibration = _k4a.k4a_calibration_t()
+		self.getDepthSensorCalibration(calibration)
+		transformation_handle = self.transformation_create(calibration)
+		point_cloud = _k4atypes.k4a_image_t()
+
+		self.image_create(
+			_k4atypes.K4A_IMAGE_FORMAT_CUSTOM,
+			self.image_get_width_pixels(depth_image_handle),
+			self.image_get_height_pixels(depth_image_handle),
+			self.image_get_width_pixels(depth_image_handle) * 6,
+			point_cloud
+		)
+
+		_k4a.VERIFY(self.k4a.k4a_transformation_depth_image_to_point_cloud(
+			transformation_handle,
+			depth_image_handle,
+			_k4atypes.K4A_CALIBRATION_TYPE_DEPTH,
+			point_cloud
+		), "Error Occur When Make Point Cloud")
+
+		return point_cloud
 
 	def transformation_depth_image_to_color_camera(self,transformation_handle,input_depth_image_handle, transformed_depth_image_handle):
 		"""Transforms the depth map into the geometry of the color camera.
