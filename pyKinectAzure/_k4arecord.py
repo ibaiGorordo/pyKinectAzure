@@ -7,7 +7,7 @@ import traceback
 class k4arecord:
 	def __init__(self, modulePath):
 		try:
-			recorddll = ctypes.CDLL(modulePath.replace('k4a.dll', 'k4arecord.dll'))
+			recorddll = ctypes.CDLL(modulePath.replace('k4a', 'k4arecord'))
 		except Exception as e:
 			try:
 				recorddll = ctypes.CDLL('k4arecord.so')
