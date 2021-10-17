@@ -50,17 +50,20 @@ class _k4a_record_configuration_t(ctypes.Structure):
 		("subordinate_delay_off_master_usec", ctypes.c_uint32),
 		("start_timestamp_offset_usec", ctypes.c_uint32),
 	]
+k4a_record_configuration_t = _k4a_record_configuration_t
 
-
-class k4a_record_video_settings_t(ctypes.Structure):
+class _k4a_record_video_settings_t(ctypes.Structure):
 	_fields_= [
 		("width", ctypes.c_ulong),
 		("height", ctypes.c_ulong),
 		("frame_rate", ctypes.c_ulong),
 	]
 
-class k4a_record_video_settings_t(ctypes.Structure):
+k4a_record_video_settings_t = _k4a_record_video_settings_t
+
+class _k4a_record_subtitle_settings_t(ctypes.Structure):
 	_fields_= [
 		("high_freq_data", ctypes.c_bool),
 	]
 
+k4a_record_subtitle_settings_t = _k4a_record_subtitle_settings_t

@@ -6,36 +6,37 @@ import pykinect_azure as pykinect
 
 if __name__ == "__main__":
 
+	video_filename = "output.mkv"
+
 	# Initialize the library, if the library is not found, add the library path as argument
 	pykinect.initialize_libraries(track_body=True)
 
-	# Modify camera configuration
-	device_config = pykinect.default_configuration
-	device_config.color_resolution = pykinect.K4A_COLOR_RESOLUTION_OFF
-	device_config.depth_mode = pykinect.K4A_DEPTH_MODE_WFOV_2X2BINNED
-	#print(device_config)
+	# Start playback
+	playback = pykinect.start_playback(video_filename)
 
-	# Start device
-	device = pykinect.start_device(config=device_config)
+	playback_config = playback.get_record_configuration()
+	# print(playback_config)
+
+	playback_calibration = playback.get_calibration()
 
 	# Start body tracker
-	bodyTracker = pykinect.start_body_tracker(model_type=pykinect.K4ABT_DEFAULT_MODEL)
+	bodyTracker = pykinect.start_body_tracker(calibration=playback_calibration)
 
 	cv2.namedWindow('Depth image with skeleton',cv2.WINDOW_NORMAL)
-	while True:
+	while playback.isOpened():
 
-		# Get capture
-		capture = device.update()
+		# Get camera capture
+		capture = playback.update()
 
 		# Get body tracker frame
-		body_frame = bodyTracker.update()
+		body_frame = bodyTracker.update(capture=capture)
 
-		# Get the color depth image from the capture
+		# Get the colored depth
 		ret, depth_color_image = capture.get_colored_depth_image()
 
 		# Get the colored body segmentation
 		ret, body_image_color = body_frame.get_segmentation_image()
-
+		
 		if not ret:
 			continue
 			

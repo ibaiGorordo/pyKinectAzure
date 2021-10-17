@@ -1,6 +1,7 @@
-from _k4atypes import k4a_float3_t, k4a_float2_t, k4a_calibration_t, k4a_capture_t, k4a_image_t
 import ctypes
 import numpy as np
+
+from pykinect_azure.k4a._k4atypes import k4a_float3_t, k4a_float2_t
 
 # K4A_DECLARE_HANDLE(k4abt_tracker_t);
 class _handle_k4abt_tracker_t(ctypes.Structure):
@@ -54,6 +55,11 @@ K4ABT_JOINT_EAR_LEFT = 29
 K4ABT_JOINT_EYE_RIGHT = 30
 K4ABT_JOINT_EAR_RIGHT = 31
 K4ABT_JOINT_COUNT = 32
+
+K4ABT_JOINT_NAMES = ["pelvis", "spine - navel", "spine - chest", "neck", "left clavicle", "left shoulder", "left elbow",
+                    "left wrist", "left hand", " left handtip", "left thumb", "right clavicle", "right shoulder", "right elbow",
+                    "right wrist", "right hand", "right handtip", "right thumb", "left hip", "left knee", "left ankle", "left foot",
+                    "right hip", "right knee", "right ankle", "right foot", "head", "nose", "left eye", "left ear","rigth eye", "right ear"]
 
 K4ABT_SEGMENT_PAIRS = [[1, 0], 
                        [2, 1], 
@@ -176,11 +182,10 @@ K4ABT_DEFAULT_TRACKER_SMOOTHING_FACTOR = 0.0
 K4ABT_DEFAULT_MODEL = 0
 K4ABT_LITE_MODEL = 1
 
-# TODO(Andoryuuta): Not sure if a single instance of the default config like this will work, might need a creation function.
-K4ABT_TRACKER_CONFIG_DEFAULT = k4abt_tracker_configuration_t()
-K4ABT_TRACKER_CONFIG_DEFAULT.sensor_orientation = K4ABT_SENSOR_ORIENTATION_DEFAULT
-K4ABT_TRACKER_CONFIG_DEFAULT.processing_mode = K4ABT_TRACKER_PROCESSING_MODE_GPU
-K4ABT_TRACKER_CONFIG_DEFAULT.gpu_device_id = 0
+k4abt_tracker_default_configuration = k4abt_tracker_configuration_t()
+k4abt_tracker_default_configuration.sensor_orientation = K4ABT_SENSOR_ORIENTATION_DEFAULT
+k4abt_tracker_default_configuration.processing_mode = K4ABT_TRACKER_PROCESSING_MODE_GPU
+k4abt_tracker_default_configuration.gpu_device_id = 0
 
 body_colors = np.ones((256,3), dtype=np.uint8)*K4ABT_BODY_INDEX_MAP_BACKGROUND
 body_colors[:7,:] = np.array([[202, 183, 42], [42, 61, 202], [42, 202, 183], [202, 42,61], [183, 42, 202], [42, 202, 61], [141, 202, 42]]) 

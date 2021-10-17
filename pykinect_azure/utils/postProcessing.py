@@ -1,7 +1,6 @@
 import cv2 
 import numpy as np
 
-
 def smooth_depth_image(depth_image, max_hole_size=10):
 	"""Smoothes depth image by filling the holes using inpainting method
 

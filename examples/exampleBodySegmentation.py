@@ -1,78 +1,51 @@
-
 import sys
-sys.path.insert(1, '../pyKinectAzure/')
-
-import numpy as np
-from pyKinectAzure import pyKinectAzure, _k4a
-from kinectBodyTracker import kinectBodyTracker, _k4abt
 import cv2
 
-# Path to the module
-# TODO: Modify with the path containing the k4a.dll from the Azure Kinect SDK
-modulePath = 'C:\\Program Files\\Azure Kinect SDK v1.4.1\\sdk\\windows-desktop\\amd64\\release\\bin\\k4a.dll' 
-bodyTrackingModulePath = 'C:\\Program Files\\Azure Kinect Body Tracking SDK\\sdk\\windows-desktop\\amd64\\release\\bin\\k4abt.dll'
-# under x86_64 linux please use r'/usr/lib/x86_64-linux-gnu/libk4a.so'
-# In Jetson please use r'/usr/lib/aarch64-linux-gnu/libk4a.so'
+sys.path.insert(1, '../')
+import pykinect_azure as pykinect
 
 if __name__ == "__main__":
 
-	# Initialize the library with the path containing the module
-	pyK4A = pyKinectAzure(modulePath)
-
-	# Open device
-	pyK4A.device_open()
+	# Initialize the library, if the library is not found, add the library path as argument
+	pykinect.initialize_libraries(track_body=True)
 
 	# Modify camera configuration
-	device_config = pyK4A.config
-	device_config.color_resolution = _k4a.K4A_COLOR_RESOLUTION_OFF
-	device_config.depth_mode = _k4a.K4A_DEPTH_MODE_NFOV_UNBINNED
-	print(device_config)
+	device_config = pykinect.default_configuration
+	device_config.color_resolution = pykinect.K4A_COLOR_RESOLUTION_OFF
+	device_config.depth_mode = pykinect.K4A_DEPTH_MODE_WFOV_2X2BINNED
+	#print(device_config)
+	
+	# Start device
+	device = pykinect.start_device(config=device_config)
 
-	# Start cameras using modified configuration
-	pyK4A.device_start_cameras(device_config)
+	# Start body tracker
+	bodyTracker = pykinect.start_body_tracker()
 
-	# Initialize the body tracker
-	pyK4A.bodyTracker_start(bodyTrackingModulePath)
-
-	k = 0
+	cv2.namedWindow('Segmented Depth Image',cv2.WINDOW_NORMAL)
 	while True:
+		k = cv2.waitKey(1)
+
 		# Get capture
-		pyK4A.device_get_capture()
+		capture = device.update()
 
-		# Get the depth image from the capture
-		depth_image_handle = pyK4A.capture_get_depth_image()
+		# Get body tracker frame
+		body_frame = bodyTracker.update()
 
+		# Get the color depth image from the capture
+		ret, depth_color_image = capture.get_colored_depth_image()
 
-		# Check the image has been read correctly
-		if depth_image_handle:
+		# Get the colored body segmentation
+		ret, body_image_color = body_frame.get_segmentation_image()
 
-			# Perform body detection
-			pyK4A.bodyTracker_update()
+		if not ret:
+			continue
+			
+		# Combine both images
+		combined_image = cv2.addWeighted(depth_color_image, 0.6, body_image_color, 0.4, 0)
 
-
-			# Read and convert the image data to numpy array:
-			depth_image = pyK4A.image_convert_to_numpy(depth_image_handle)
-			depth_color_image = cv2.convertScaleAbs (depth_image, alpha=0.05)  #alpha is fitted by visual comparison with Azure k4aviewer results 
-			depth_color_image = cv2.cvtColor(depth_color_image, cv2.COLOR_GRAY2RGB) 
-
-			# Get body segmentation image
-			body_image_color = pyK4A.bodyTracker_get_body_segmentation()
-
-			combined_image = cv2.addWeighted(depth_color_image, 0.8, body_image_color, 0.2, 0)
-
-			# Overlay body segmentation on depth image
-			cv2.imshow('Segmented Depth Image',combined_image)
-			k = cv2.waitKey(1)
-
-			# Release the image
-			pyK4A.image_release(depth_image_handle)
-			pyK4A.image_release(pyK4A.body_tracker.segmented_body_img)
-
-		pyK4A.capture_release()
-		pyK4A.body_tracker.release_frame()
-
-		if k==27:    # Esc key to stop
+		# Overlay body segmentation on depth image
+		cv2.imshow('Segmented Depth Image',combined_image)
+		
+		# Press q key to stop
+		if cv2.waitKey(1) == ord('q'):  
 			break
-
-	pyK4A.device_stop_cameras()
-	pyK4A.device_close()
