@@ -24,8 +24,12 @@ class Capture:
 
 	def reset(self):
 		if self.is_valid():
-			_k4a.k4a_capture_release(self._handle)
+			self.release_handle()
 			self._handle = None
+
+	def release_handle(self):
+		if self.is_valid():
+			_k4a.k4a_capture_release(self._handle)
 
 	@staticmethod
 	def create():

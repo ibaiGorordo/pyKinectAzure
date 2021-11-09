@@ -794,6 +794,6 @@ def k4a_transformation_depth_image_to_point_cloud(transformation_handle, depth_i
 def VERIFY(result, error):
 	if result != K4A_RESULT_SUCCEEDED:
 		print(error)
-		traceback.print_stack()
+		# traceback.print_stack()
 		sys.exit(1)
 

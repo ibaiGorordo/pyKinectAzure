@@ -14,6 +14,7 @@ class Device:
 	imu_sample = None
 
 	def __init__(self, index=0):
+		self._handle = None
 		self._handle = self.open(index)
 		self.recording = False
 
@@ -81,6 +82,11 @@ class Device:
 		return Device.imu_sample
 
 	def get_capture(self, timeout_in_ms=_k4a.K4A_WAIT_INFINITE):
+
+		# Release current handle
+		if self.is_capture_initialized():
+			Device.capture.release_handle()
+
 		capture_handle = _k4a.k4a_capture_t()
 		_k4a.VERIFY(_k4a.k4a_device_get_capture(self._handle, capture_handle, timeout_in_ms),"Get capture failed!")
 			

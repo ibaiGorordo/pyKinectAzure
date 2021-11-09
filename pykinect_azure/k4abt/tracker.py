@@ -45,6 +45,7 @@ class Tracker:
 	def pop_result(self, timeout_in_ms=K4A_WAIT_INFINITE):
 
 		if self.is_frame_initialized():
+			self.frame.release()
 			_k4abt.VERIFY(_k4abt.k4abt_tracker_pop_result(self._handle, self.frame.handle(), timeout_in_ms), "Body tracker get body frame failed!")
 		else:
 			frame_handle = _k4abt.k4abt_frame_t()

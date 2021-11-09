@@ -28,8 +28,12 @@ class Frame:
 
 	def reset(self):
 		if self.is_valid():
-			_k4abt.k4abt_frame_release(self._handle)
+			self.release()
 			self._handle = None
+
+	def release(self):
+		if self.is_valid():
+			_k4abt.k4abt_frame_release(self._handle)
 
 	def get_num_bodies(self):
 		return _k4abt.k4abt_frame_get_num_bodies(self._handle)
