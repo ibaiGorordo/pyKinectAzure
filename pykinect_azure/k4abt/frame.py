@@ -87,10 +87,10 @@ class Frame:
 		return self.get_body2d(bodyIdx, dest_camera).draw(destination_image, only_segments)
 
 	def get_device_timestamp_usec(self):
-		return Image(_k4abt.k4abt_frame_get_device_timestamp_usec(self._handle))
+		return _k4abt.k4abt_frame_get_device_timestamp_usec(self._handle)
 
 	def get_body_index_map(self):
-		return Image(_k4abt.k4abt_frame_get_body_index_map(self._handle))
+		return _k4abt.k4abt_frame_get_body_index_map(self._handle)
 
 	def get_body_index_map_image(self):
 		return self.get_body_index_map().to_numpy()
