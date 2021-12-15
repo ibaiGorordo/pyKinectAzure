@@ -59,7 +59,7 @@ K4ABT_JOINT_COUNT = 32
 K4ABT_JOINT_NAMES = ["pelvis", "spine - navel", "spine - chest", "neck", "left clavicle", "left shoulder", "left elbow",
                     "left wrist", "left hand", " left handtip", "left thumb", "right clavicle", "right shoulder", "right elbow",
                     "right wrist", "right hand", "right handtip", "right thumb", "left hip", "left knee", "left ankle", "left foot",
-                    "right hip", "right knee", "right ankle", "right foot", "head", "nose", "left eye", "left ear","rigth eye", "right ear"]
+                    "right hip", "right knee", "right ankle", "right foot", "head", "nose", "left eye", "left ear","right eye", "right ear"]
 
 K4ABT_SEGMENT_PAIRS = [[1, 0], 
                        [2, 1], 
