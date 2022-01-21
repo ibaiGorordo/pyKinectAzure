@@ -90,7 +90,7 @@ class Frame:
 		return _k4abt.k4abt_frame_get_device_timestamp_usec(self._handle)
 
 	def get_body_index_map(self):
-		return _k4abt.k4abt_frame_get_body_index_map(self._handle)
+		return Image(_k4abt.k4abt_frame_get_body_index_map(self._handle))
 
 	def get_body_index_map_image(self):
 		return self.get_body_index_map().to_numpy()
@@ -109,9 +109,7 @@ class Frame:
 
 	def get_transformed_segmentation_image(self):
 		ret, transformed_body_index_map = self.get_transformed_body_index_map_image()
-
-		# return ret, np.dstack([cv2.LUT(transformed_body_index_map, body_colors[:,i]) for i in range(3)])
-		return ret, np.tile(transformed_body_index_map,(1,1,4))
+		return ret, np.dstack([cv2.LUT(transformed_body_index_map, body_colors[:,i]) for i in range(3)])
 		
 	def get_capture(self):
 		return Capture(_k4abt.k4abt_frame_get_capture(self._handle), self.calibration._handle)
