@@ -32,12 +32,10 @@ class Body:
 		self.joints = joints
 
 	def __str__(self):
+
 		"""Print the current settings and a short explanation"""
-		message = (
-			"Joint info: \n"
-			f"\tposition: [{self.position.x},{self.position.y},{self.position.z}]\n"
-			f"\torientation: [{self.orientation.w},{self.orientation.x},{self.orientation.y},{self.orientation.z}]\n"
-			f"\tconfidence: {self.tconfidence} \n")
+		message = '\nBody:\n' +''.join(f'{joint.__str__()}' for joint in self.joints)
+
 		return message
 
 
