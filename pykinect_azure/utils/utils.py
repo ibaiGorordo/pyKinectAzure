@@ -29,7 +29,7 @@ def get_k4abt_module_path():
 
     # For non-Arm chips, first check if it is running linux
     if platform.system().lower() == 'linux':
-        return 'k4abt.so'
+        return 'libk4abt.so'
 
     # Otherwise return the Windows version
     return 'C:\\Program Files\\Azure Kinect Body Tracking SDK\\sdk\\windows-desktop\\amd64\\release\\bin\\k4abt.dll'
