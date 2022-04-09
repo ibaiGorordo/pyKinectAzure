@@ -5,16 +5,16 @@ from pykinect_azure.k4a._k4atypes import k4a_float3_t, k4a_float2_t
 
 # K4A_DECLARE_HANDLE(k4abt_tracker_t);
 class _handle_k4abt_tracker_t(ctypes.Structure):
-     _fields_= [
-        ("_rsvd", ctypes.c_size_t),
-    ]
+	 _fields_= [
+		("_rsvd", ctypes.c_size_t),
+	]
 k4abt_tracker_t = ctypes.POINTER(_handle_k4abt_tracker_t)
 
 # K4A_DECLARE_HANDLE(k4abt_frame_t);
 class _handle_k4abt_frame_t(ctypes.Structure):
-     _fields_= [
-        ("_rsvd", ctypes.c_size_t),
-    ]
+	 _fields_= [
+		("_rsvd", ctypes.c_size_t),
+	]
 k4abt_frame_t = ctypes.POINTER(_handle_k4abt_frame_t)
 
 k4abt_result_t = ctypes.c_int
@@ -57,41 +57,41 @@ K4ABT_JOINT_EAR_RIGHT = 31
 K4ABT_JOINT_COUNT = 32
 
 K4ABT_JOINT_NAMES = ["pelvis", "spine - navel", "spine - chest", "neck", "left clavicle", "left shoulder", "left elbow",
-                    "left wrist", "left hand", " left handtip", "left thumb", "right clavicle", "right shoulder", "right elbow",
-                    "right wrist", "right hand", "right handtip", "right thumb", "left hip", "left knee", "left ankle", "left foot",
-                    "right hip", "right knee", "right ankle", "right foot", "head", "nose", "left eye", "left ear","right eye", "right ear"]
+					"left wrist", "left hand", " left handtip", "left thumb", "right clavicle", "right shoulder", "right elbow",
+					"right wrist", "right hand", "right handtip", "right thumb", "left hip", "left knee", "left ankle", "left foot",
+					"right hip", "right knee", "right ankle", "right foot", "head", "nose", "left eye", "left ear","right eye", "right ear"]
 
 K4ABT_SEGMENT_PAIRS = [[1, 0], 
-                       [2, 1], 
-                       [3, 2], 
-                       [4, 2], 
-                       [5, 4], 
-                       [6, 5], 
-                       [7, 6], 
-                       [8, 7], 
-                       [9, 8],
-                       [10, 7], 
-                       [11, 2], 
-                       [12, 11], 
-                       [13, 12], 
-                       [14, 13], 
-                       [15, 14], 
-                       [16, 15], 
-                       [17, 14], 
-                       [18, 0], 
-                       [19, 18],
-                       [20, 19], 
-                       [21, 20], 
-                       [22, 0], 
-                       [23, 22], 
-                       [24, 23], 
-                       [25, 24], 
-                       [26, 3], 
-                       [27, 26],
-                       [28, 26], 
-                       [29, 26], 
-                       [30, 26], 
-                       [31, 26]]
+					   [2, 1], 
+					   [3, 2], 
+					   [4, 2], 
+					   [5, 4], 
+					   [6, 5], 
+					   [7, 6], 
+					   [8, 7], 
+					   [9, 8],
+					   [10, 7], 
+					   [11, 2], 
+					   [12, 11], 
+					   [13, 12], 
+					   [14, 13], 
+					   [15, 14], 
+					   [16, 15], 
+					   [17, 14], 
+					   [18, 0], 
+					   [19, 18],
+					   [20, 19], 
+					   [21, 20], 
+					   [22, 0], 
+					   [23, 22], 
+					   [24, 23], 
+					   [25, 24], 
+					   [26, 3], 
+					   [27, 26],
+					   [28, 26], 
+					   [29, 26], 
+					   [30, 26], 
+					   [31, 26]]
 
 #class k4abt_sensor_orientation_t(CtypeIntEnum):
 K4ABT_SENSOR_ORIENTATION_DEFAULT = 0
@@ -107,27 +107,36 @@ K4ABT_TRACKER_PROCESSING_MODE_GPU_TENSORRT = 3
 K4ABT_TRACKER_PROCESSING_MODE_GPU_DIRECTML = 4
 
 class _k4abt_tracker_configuration_t(ctypes.Structure):
-    _fields_= [
-        ("sensor_orientation", ctypes.c_int),
-        ("processing_mode", ctypes.c_int),
-        ("gpu_device_id", ctypes.c_int32),
-        ("model_path", ctypes.c_char_p),
-    ]
+	_fields_= [
+		("sensor_orientation", ctypes.c_int),
+		("processing_mode", ctypes.c_int),
+		("gpu_device_id", ctypes.c_int32),
+		("model_path", ctypes.c_char_p),
+	]
 k4abt_tracker_configuration_t = _k4abt_tracker_configuration_t
 
 class _wxyz(ctypes.Structure):
-    _fields_= [
-        ("w", ctypes.c_float),
-        ("x", ctypes.c_float),
-        ("y", ctypes.c_float),
-        ("z", ctypes.c_float),
-    ]
+	_fields_= [
+		("w", ctypes.c_float),
+		("x", ctypes.c_float),
+		("y", ctypes.c_float),
+		("z", ctypes.c_float),
+	]
+
+	def __iter__(self):
+		return {'w':self.w, 'x':self.x, 'y':self.y, 'z':self.z}
+
 
 class k4a_quaternion_t(ctypes.Union):
-   _fields_= [
-        ("wxyz", _wxyz),
-        ("v", ctypes.c_float * 4)
-    ]
+	_fields_= [
+		("wxyz", _wxyz),
+		("v", ctypes.c_float * 4)
+	]
+
+	def __iter__(self):
+		wxyz = self.wxyz.__iter__()
+		wxyz.update({'v':[v for v in self.v]})
+		return wxyz
 
 #class k4abt_joint_confidence_level_t(CtypeIntEnum):
 K4ABT_JOINT_CONFIDENCE_NONE = 0
@@ -138,41 +147,65 @@ K4ABT_JOINT_CONFIDENCE_LEVELS_COUNT = 4
 
 
 class _k4abt_joint_t(ctypes.Structure):
-    _fields_= [
-        ("position", k4a_float3_t),
-        ("orientation", k4a_quaternion_t),
-        ("confidence_level", ctypes.c_int),
-    ]
+	_fields_= [
+		("position", k4a_float3_t),
+		("orientation", k4a_quaternion_t),
+		("confidence_level", ctypes.c_int),
+	]
+
+	def __iter__(self):
+		return {'position':self.position.__iter__(), 
+				'orientation':self.orientation.__iter__(),
+				'confidence_level':self.confidence_level}
+
 k4abt_joint_t = _k4abt_joint_t
 
 class k4abt_skeleton_t(ctypes.Structure):
-    _fields_= [
-        ("joints", _k4abt_joint_t * K4ABT_JOINT_COUNT),
-    ]
+	_fields_= [
+		("joints", _k4abt_joint_t * K4ABT_JOINT_COUNT),
+	]
+
+	def __iter__(self):
+		return {'joints': [joint.__iter__() for joint in self.joints]}
+
 
 class k4abt_body_t(ctypes.Structure):
-    _fields_= [
-        ("id", ctypes.c_uint32),
-        ("skeleton", k4abt_skeleton_t),
-    ]
+	_fields_= [
+		("id", ctypes.c_uint32),
+		("skeleton", k4abt_skeleton_t),
+	]
+
+	def __iter__(self):
+		return {'id':self.id, 'skeleton': self.skeleton.__iter__()}
 
 class _k4abt_joint2D_t(ctypes.Structure):
-    _fields_= [
-        ("position", k4a_float2_t),
-        ("confidence_level", ctypes.c_int),
-    ]
+	_fields_= [
+		("position", k4a_float2_t),
+		("confidence_level", ctypes.c_int),
+	]
+
+	def __iter__(self):
+		return {'position':self.position.__iter__(),
+				'confidence_level':self.confidence_level}
+
 k4abt_joint2D_t = _k4abt_joint2D_t
 
 class k4abt_skeleton2D_t(ctypes.Structure):
-    _fields_= [
-        ("joints2D", _k4abt_joint2D_t * K4ABT_JOINT_COUNT),
-    ]
+	_fields_= [
+		("joints2D", _k4abt_joint2D_t * K4ABT_JOINT_COUNT),
+	]
+
+	def __iter__(self):
+		return {'joints2D': [joint.__iter__() for joint in self.joints2D]}
 
 class k4abt_body2D_t(ctypes.Structure):
-    _fields_= [
-        ("id", ctypes.c_uint32),
-        ("skeleton", k4abt_skeleton2D_t),
-    ]
+	_fields_= [
+		("id", ctypes.c_uint32),
+		("skeleton", k4abt_skeleton2D_t),
+	]
+
+	def __iter__(self):
+		return {'id':self.id, 'skeleton': self.skeleton.__iter__()}
 
 
 K4ABT_BODY_INDEX_MAP_BACKGROUND = 255

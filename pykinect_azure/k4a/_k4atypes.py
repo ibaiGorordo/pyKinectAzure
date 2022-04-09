@@ -161,10 +161,10 @@ def K4A_FAILED(result):
 
 """
 typedef void(k4a_logging_message_cb_t)(void *context,
-									   k4a_log_level_t level,
-									   const char *file,
-									   const int line,
-									   const char *message);
+										k4a_log_level_t level,
+										const char *file,
+										const int line,
+										const char *message);
 
 typedef void(k4a_memory_destroy_cb_t)(void *buffer, void *context);
 
@@ -282,13 +282,20 @@ class _xy(ctypes.Structure):
 		("y", ctypes.c_float),
 	]
 
+	def __iter__(self):
+		return {'x':self.x, 'y':self.y}
+
 
 class k4a_float2_t(ctypes.Union):
-   _fields_= [
+	_fields_= [
 		("xy", _xy),
 		("v", ctypes.c_float * 2)
 	]
 
+	def __iter__(self):
+		xy = self.xy.__iter__()
+		xy.update({'v':[v for v in self.v]})
+		return xy
 
 class _xyz(ctypes.Structure):
 	_fields_= [
@@ -297,12 +304,20 @@ class _xyz(ctypes.Structure):
 		("z", ctypes.c_float),
 	]
 
+	def __iter__(self):
+		return {'x':self.x, 'y':self.y, 'z':self.z}
+
 
 class k4a_float3_t(ctypes.Union):
-   _fields_= [
+	_fields_= [
 		("xyz", _xyz),
 		("v", ctypes.c_float * 3)
 	]
+
+	def __iter__(self):
+		xyz = self.xyz.__iter__()
+		xyz.update({'v':[v for v in self.v]})
+		return xyz
 
 
 class k4a_imu_sample_t(ctypes.Structure):

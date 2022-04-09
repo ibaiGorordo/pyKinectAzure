@@ -18,6 +18,10 @@ class Body2d:
 
 		self.destroy()
 
+	def json(self):
+
+		return self._handle.__iter__()
+
 	def is_valid(self):
 		return self._handle
 

@@ -20,6 +20,15 @@ class Frame:
 	def __del__(self):
 		self.reset()
 
+	def json(self):
+
+		bodies = self.get_bodies()
+
+		if not bodies:
+			return ""
+
+		return [body.json() for body in bodies]
+
 	def is_valid(self):
 		return self._handle
 

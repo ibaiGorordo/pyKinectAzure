@@ -10,6 +10,10 @@ class Body:
 			self._handle = skeleton_handle
 			self.initialize()
 
+	def json(self):
+
+		return self._handle.__iter__()
+
 	def __del__(self):
 		self.destroy()
 
