@@ -68,7 +68,7 @@ class Transformation:
 
 	def depth_image_to_point_cloud(self, depth_image, calibration_type = _k4a.K4A_CALIBRATION_TYPE_DEPTH):
 
-		xyz_image = Image.create(_k4a.K4A_IMAGE_FORMAT_COLOR_BGRA32,
+		xyz_image = Image.create(_k4a.K4A_IMAGE_FORMAT_CUSTOM,
 									depth_image.get_width_pixels(), 
 									depth_image.get_height_pixels(),
 									depth_image.get_width_pixels()*3*2)

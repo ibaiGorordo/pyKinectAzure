@@ -122,3 +122,5 @@ class Image:
 			return True, np.frombuffer(buffer_array, dtype="<u1").copy().reshape(image_height,image_width)
 		elif image_format == _k4a.K4A_IMAGE_FORMAT_CUSTOM16:
 			return True, np.frombuffer(buffer_array, dtype="<u2").copy().reshape(image_height,image_width)
+		elif image_format == _k4a.K4A_IMAGE_FORMAT_CUSTOM:
+			return True, np.frombuffer(buffer_array, dtype="<u2").copy().reshape(-1,3)
