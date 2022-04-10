@@ -14,6 +14,9 @@ class Body:
 
 		return self._handle.__iter__()
 
+	def numpy(self):
+		return np.array([joint.numpy() for joint in self.joints])
+
 	def __del__(self):
 		self.destroy()
 

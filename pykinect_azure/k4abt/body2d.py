@@ -19,8 +19,10 @@ class Body2d:
 		self.destroy()
 
 	def json(self):
-
 		return self._handle.__iter__()
+
+	def numpy(self):
+		return np.array([joint.numpy() for joint in self.joints])
 
 	def is_valid(self):
 		return self._handle

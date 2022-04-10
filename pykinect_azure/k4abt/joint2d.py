@@ -1,3 +1,4 @@
+import numpy as np
 from pykinect_azure.k4abt._k4abtTypes import K4ABT_JOINT_NAMES
 
 class Joint2d:
@@ -14,6 +15,9 @@ class Joint2d:
 	def __del__(self):
 
 		self.destroy()
+
+	def numpy(self):
+		return np.array([self.position.x,self.position.y])
 
 	def is_valid(self):
 		return self._handle
