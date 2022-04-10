@@ -97,7 +97,9 @@ class Capture:
 		return ret, self.color_depth_image(smooth_depth_image)
 
 	def get_pointcloud(self, calibration_type = _k4a.K4A_CALIBRATION_TYPE_DEPTH):
-		return self.get_pointcloud_object(calibration_type).to_numpy()
+		ret, points = self.get_pointcloud_object(calibration_type).to_numpy()
+		points = points.reshape((-1, 3))
+		return ret, points
 
 	@staticmethod
 	def color_depth_image(depth_image):
