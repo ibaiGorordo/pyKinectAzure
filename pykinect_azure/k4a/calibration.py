@@ -7,32 +7,45 @@ class Calibration:
 	def __init__(self, calibration_handle):
 
 		self._handle = calibration_handle
+		self.color_params = self._handle.color_camera_calibration.intrinsics.parameters.param
+		self.depth_params = self._handle.depth_camera_calibration.intrinsics.parameters.param
 
 	def __del__(self):
 
 		self.reset()
 		
 	def __str__(self):
-		params = self._handle.color_camera_calibration.intrinsics.parameters.param
+		
 		message = (
 			"Rgb Intrinsic parameters: \n"
-			f"\tcx: {params.cx}\n"
-			f"\tcy: {params.cy}\n"
-			f"\tfx: {params.fx}\n"
-			f"\tfy: {params.fy}\n"
-			f"\tk1: {params.k1}\n"
-			f"\tk2: {params.k2}\n"
-			f"\tk3: {params.k3}\n"
-			f"\tk4: {params.k4}\n"
-			f"\tk5: {params.k5}\n"
-			f"\tk6: {params.k6}\n"
-			f"\tcodx: {params.codx}\n"
-			f"\tcody: {params.cody}\n"
-			f"\tp2: {params.p2}\n"
-			f"\tp1: {params.p1}\n"
-			f"\tmetric_radius: {params.metric_radius}\n"
+			f"\tcx: {self.color_params.cx}\n"
+			f"\tcy: {self.color_params.cy}\n"
+			f"\tfx: {self.color_params.fx}\n"
+			f"\tfy: {self.color_params.fy}\n"
+			f"\tk1: {self.color_params.k1}\n"
+			f"\tk2: {self.color_params.k2}\n"
+			f"\tk3: {self.color_params.k3}\n"
+			f"\tk4: {self.color_params.k4}\n"
+			f"\tk5: {self.color_params.k5}\n"
+			f"\tk6: {self.color_params.k6}\n"
+			f"\tcodx: {self.color_params.codx}\n"
+			f"\tcody: {self.color_params.cody}\n"
+			f"\tp2: {self.color_params.p2}\n"
+			f"\tp1: {self.color_params.p1}\n"
+			f"\tmetric_radius: {self.color_params.metric_radius}\n"
 			)
 		return message
+
+	def get_matrix(self, camera="color"):
+		if camera == "color":
+			return [[self.color_params.fx,0,self.color_params.cx],
+			        [0,self.color_params.fy,self.color_params.cy],
+			        [0,0,1]]
+		elif camera == "depth":
+			return [[self.depth_params.fx,0,self.depth_params.cx],
+			        [0,self.depth_params.fy,self.depth_params.cy],
+			        [0,0,1]]
+
 
 	def is_valid(self):
 		return self._handle
