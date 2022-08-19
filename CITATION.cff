@@ -1,0 +1,11 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: pyKinectAzure
+message: You can cite this repository using the info below
+type: software
+authors:
+  - given-names: Ibai
+    family-names: Gorordo Fernandez
+    orcid: 'https://orcid.org/0000-0003-3219-1879'
