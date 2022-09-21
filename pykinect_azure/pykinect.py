@@ -13,10 +13,6 @@ def initialize_libraries(module_k4a_path=None, module_k4abt_path=None, track_bod
     if module_k4a_path is None:
         module_k4a_path = get_k4a_module_path()
 
-    # Search the module path for k4abt if not available
-    if module_k4abt_path is None:
-        module_k4abt_path = get_k4abt_module_path()
-
     module_k4arecord_path = get_k4arecord_module_path(module_k4a_path)
 
     # Initialize k4a related wrappers
@@ -26,6 +22,10 @@ def initialize_libraries(module_k4a_path=None, module_k4abt_path=None, track_bod
     init_k4arecord(module_k4arecord_path)
 
     if track_body:
+        # Search the module path for k4abt if not available
+        if module_k4abt_path is None:
+            module_k4abt_path = get_k4abt_module_path()
+
         # Initialize k4abt related wrappers
         init_k4abt(module_k4abt_path)
 
