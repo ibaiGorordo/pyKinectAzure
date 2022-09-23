@@ -17,7 +17,8 @@ class Joint:
 		self.destroy()
 
 	def numpy(self):
-		return np.array([self.position.x, self.position.y, self.position.z,
+		return np.array([self.id,
+						 self.position.x, self.position.y, self.position.z,
 						 self.orientation.w, self.orientation.x, self.orientation.y, self.orientation.z,
 						 self.confidence_level])
 
