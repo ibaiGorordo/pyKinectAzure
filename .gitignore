@@ -1,5 +1,3 @@
 
 *.pyc
 examples/outputImage.jpg
-venv/
-.idea/
