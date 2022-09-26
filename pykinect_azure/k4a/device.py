@@ -7,153 +7,185 @@ from pykinect_azure.k4a.calibration import Calibration
 from pykinect_azure.k4a.configuration import Configuration
 from pykinect_azure.k4arecord.record import Record
 from pykinect_azure.k4a._k4atypes import K4A_WAIT_INFINITE
+from dataclasses import dataclass
+from typing import *
+
+@dataclass
+class DeviceData:
+    calibration: Calibration = None
+    capture: Capture = None
+    imu_sample: ImuSample = None
+
 
 class Device:
-	calibration = None
-	capture = None
-	imu_sample = None
+    data_dict: List[DeviceData] = {}
 
-	def __init__(self, index=0):
-		self._handle = None
-		self._handle = self.open(index)
-		self.recording = False
+    # calibration = None
+    # capture = None
+    # imu_sample = None
 
-	def __del__(self):
-		self.close()
+    def __init__(self, index=0):
+        self._handle = None
+        self._handle = self.open(index)
+        self.recording = False
+        self.index = index
+        Device.data_dict[self.index] = DeviceData()
 
-	def is_valid(self):
-		return self._handle
+    def __del__(self):
+        self.close()
 
-	def is_capture_initialized(self):
-		return Device.capture
+    def get_data_dict(self):
+        return Device.data_dict[self.index]
 
-	def is_imu_sample_initialized(self):
-		return Device.imu_sample
+    def is_valid(self):
+        return self._handle
 
-	def handle(self):
-		return self._handle
+    def is_capture_initialized(self):
+        # return Device.capture
+        return self.get_data_dict().capture
 
-	def start(self, configuration, record=False, record_filepath="output.mkv"):
-		self.configuration = configuration
-		self.start_cameras(configuration)
-		self.start_imu()
+    def is_imu_sample_initialized(self):
+        # return Device.imu_sample
+        return self.get_data_dict().imu_sample
 
-		if record:
-			self.record = Record(self._handle, self.configuration.handle(), record_filepath)
-			self.recording = True
+    def handle(self):
+        return self._handle
 
-	def close(self):
-		if self.is_valid():
-			self.stop_imu()
-			self.stop_cameras()
-			_k4a.k4a_device_close(self._handle)
+    def start(self, configuration, record=False, record_filepath="output.mkv"):
+        self.configuration = configuration
+        self.start_cameras(configuration)
+        self.start_imu()
 
-			# Clear members
-			self._handle = None
-			self.record = None
-			self.recording = False
+        if record:
+            self.record = Record(self._handle, self.configuration.handle(), record_filepath)
+            self.recording = True
 
-	def update(self, timeout_in_ms=K4A_WAIT_INFINITE):
-		# Get cameras capture
-		capture_handle = self.get_capture(timeout_in_ms)
+    def close(self):
+        if self.is_valid():
+            self.stop_imu()
+            self.stop_cameras()
+            _k4a.k4a_device_close(self._handle)
 
-		if self.is_capture_initialized():
-			Device.capture._handle = capture_handle
-		else :
-			Device.capture = Capture(capture_handle, Device.calibration.handle())
-		
-		# Write capture if recording
-		if self.recording:
-			self.record.write_capture(Device.capture.handle())
-			
-		return Device.capture
+            # Clear members
+            self._handle = None
+            self.record = None
+            self.recording = False
 
-	def update_imu(self, timeout_in_ms=K4A_WAIT_INFINITE):
-		
-		# Get imu sample
-		imu_sample = self.get_imu_sample(timeout_in_ms)
+    def update(self, timeout_in_ms=K4A_WAIT_INFINITE):
+        # Get cameras capture
+        capture_handle = self.get_capture(timeout_in_ms)
 
-		if self.is_imu_sample_initialized():
-			Device.imu_sample._struct = imu_sample
-			Device.imu_sample.parse_data()
-		else :
-			Device.imu_sample = ImuSample(imu_sample)
-				
-		return Device.imu_sample
+        if self.is_capture_initialized():
+            self.get_data_dict().capture._handle = capture_handle
+        else:
+            self.get_data_dict().capture = Capture(capture_handle, self.get_data_dict().calibration.handle())
 
-	def get_capture(self, timeout_in_ms=_k4a.K4A_WAIT_INFINITE):
+        # Write capture if recording
+        if self.recording:
+            self.record.write_capture(self.get_data_dict().capture.handle())
 
-		# Release current handle
-		if self.is_capture_initialized():
-			Device.capture.release_handle()
+        return self.get_data_dict().capture
 
-		capture_handle = _k4a.k4a_capture_t()
-		_k4a.VERIFY(_k4a.k4a_device_get_capture(self._handle, capture_handle, timeout_in_ms),"Get capture failed!")
-			
-		return capture_handle
+    def update_imu(self, timeout_in_ms=K4A_WAIT_INFINITE):
 
-	def get_imu_sample(self, timeout_in_ms=_k4a.K4A_WAIT_INFINITE):
+        # Get imu sample
+        imu_sample = self.get_imu_sample(timeout_in_ms)
 
-		imu_sample = _k4a.k4a_imu_sample_t()
+        if self.is_imu_sample_initialized():
+            self.get_data_dict().imu_sample._struct = imu_sample
+            self.get_data_dict().imu_sample.parse_data()
+        else:
+            self.get_data_dict().imu_sample = ImuSample(imu_sample)
 
-		_k4a.VERIFY(_k4a.k4a_device_get_imu_sample(self._handle,imu_sample,timeout_in_ms),"Get IMU failed!")
+        return self.get_data_dict().imu_sample
 
-		return imu_sample
+    def get_capture(self, timeout_in_ms=_k4a.K4A_WAIT_INFINITE):
 
-	def start_cameras(self, device_config):
-		Device.calibration = self.get_calibration(device_config.depth_mode, device_config.color_resolution)
+        # Release current handle
+        if self.is_capture_initialized():
+            self.get_data_dict().capture.release_handle()
 
-		_k4a.VERIFY(_k4a.k4a_device_start_cameras(self._handle, device_config.handle()),"Start K4A cameras failed!")
+        capture_handle = _k4a.k4a_capture_t()
+        _k4a.VERIFY(_k4a.k4a_device_get_capture(self._handle, capture_handle, timeout_in_ms), "Get capture failed!")
 
-	def stop_cameras(self):
+        return capture_handle
 
-		_k4a.k4a_device_stop_cameras(self._handle)
+    def get_imu_sample(self, timeout_in_ms=_k4a.K4A_WAIT_INFINITE):
 
-	def start_imu(self):
+        imu_sample = _k4a.k4a_imu_sample_t()
 
-		_k4a.VERIFY(_k4a.k4a_device_start_imu(self._handle),"Start K4A IMU failed!")
+        _k4a.VERIFY(_k4a.k4a_device_get_imu_sample(self._handle, imu_sample, timeout_in_ms), "Get IMU failed!")
 
-	def stop_imu(self):
+        return imu_sample
 
-		_k4a.k4a_device_stop_imu(self._handle)
+    def start_cameras(self, device_config):
+        self.get_data_dict().calibration = self.get_calibration(device_config.depth_mode,
+                                                                device_config.color_resolution)
 
-	def get_serialnum(self):
+        _k4a.VERIFY(_k4a.k4a_device_start_cameras(self._handle, device_config.handle()), "Start K4A cameras failed!")
 
-		serial_number_size = ctypes.c_size_t()
-		result = _k4a.k4a_device_get_serialnum(self._handle, None, serial_number_size)
+    def stop_cameras(self):
 
-		if result == _k4a.K4A_BUFFER_RESULT_TOO_SMALL:
-			serial_number = ctypes.create_string_buffer(serial_number_size.value)
+        _k4a.k4a_device_stop_cameras(self._handle)
 
-		_k4a.VERIFY(_k4a.k4a_device_get_serialnum(self._handle,serial_number,serial_number_size),"Read serial number failed!")
+    def start_imu(self):
 
-		return serial_number.value.decode("utf-8") 
+        _k4a.VERIFY(_k4a.k4a_device_start_imu(self._handle), "Start K4A IMU failed!")
 
-	def get_calibration(self, depth_mode, color_resolution):
+    def stop_imu(self):
 
-		calibration_handle = _k4a.k4a_calibration_t()
+        _k4a.k4a_device_stop_imu(self._handle)
 
-		_k4a.VERIFY(_k4a.k4a_device_get_calibration(self._handle,depth_mode,color_resolution,calibration_handle),"Get calibration failed!")
-		
-		return Calibration(calibration_handle)
+    def get_serialnum(self):
 
-	def get_version(self):
+        serial_number_size = ctypes.c_size_t()
+        result = _k4a.k4a_device_get_serialnum(self._handle, None, serial_number_size)
 
-		version = _k4a.k4a_hardware_version_t()
+        if result == _k4a.K4A_BUFFER_RESULT_TOO_SMALL:
+            serial_number = ctypes.create_string_buffer(serial_number_size.value)
 
-		_k4a.VERIFY(_k4a.k4a_device_get_version(self._handle,version),"Get version failed!")
+        _k4a.VERIFY(_k4a.k4a_device_get_serialnum(self._handle, serial_number, serial_number_size),
+                    "Read serial number failed!")
 
-		return version
+        return serial_number.value.decode("utf-8")
 
-	@staticmethod
-	def open(index=0):
-		device_handle = _k4a.k4a_device_t()
+    def get_calibration(self, depth_mode, color_resolution):
 
-		_k4a.VERIFY(_k4a.k4a_device_open(index, device_handle),"Open K4A Device failed!")
+        calibration_handle = _k4a.k4a_calibration_t()
 
-		return device_handle
+        _k4a.VERIFY(_k4a.k4a_device_get_calibration(self._handle, depth_mode, color_resolution, calibration_handle),
+                    "Get calibration failed!")
 
-	@staticmethod
-	def device_get_installed_count():
-		return int(_k4a.k4a_device_get_installed_count())
+        return Calibration(calibration_handle)
 
+    def get_version(self):
+
+        version = _k4a.k4a_hardware_version_t()
+
+        _k4a.VERIFY(_k4a.k4a_device_get_version(self._handle, version), "Get version failed!")
+
+        return version
+
+    @staticmethod
+    def open(index=0):
+        device_handle = _k4a.k4a_device_t()
+
+        _k4a.VERIFY(_k4a.k4a_device_open(index, device_handle), "Open K4A Device failed!")
+
+        return device_handle
+
+    @staticmethod
+    def device_get_installed_count():
+        return int(_k4a.k4a_device_get_installed_count())
+
+    @staticmethod
+    def get_device_capture(index=0):
+        return Device.data_dict[index].capture
+
+    @staticmethod
+    def get_device_calibration(index=0):
+        return Device.data_dict[index].calibration
+
+    @staticmethod
+    def get_device_dict(index=0):
+        return Device.data_dict[index]
