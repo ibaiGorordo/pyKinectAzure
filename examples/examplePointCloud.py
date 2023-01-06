@@ -28,13 +28,13 @@ if __name__ == "__main__":
 		capture = device.update()
 
 		# Get the color depth image from the capture
-		ret, depth_image = capture.get_colored_depth_image()
-
-		if not ret:
-			continue
+		ret_depth, depth_image = capture.get_colored_depth_image()
 
 		# Get the 3D point cloud
-		ret, points = capture.get_pointcloud() 
+		ret_points, points = capture.get_pointcloud()
+
+		if not ret_depth or not ret_points:
+			continue
 
 		open3dVisualizer(points)	
 

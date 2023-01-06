@@ -81,7 +81,7 @@ class Capture:
 		return self.get_transformed_depth_object().to_numpy()
 
 	def get_transformed_colored_depth_image(self):
-		ret, transformed_depth_image  = self.get_transformed_depth_image()
+		ret, transformed_depth_image = self.get_transformed_depth_image()
 
 		return ret, self.color_depth_image(transformed_depth_image)
 

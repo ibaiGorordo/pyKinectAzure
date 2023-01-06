@@ -27,16 +27,16 @@ if __name__ == "__main__":
             break
 
         # Get color image
-        ret_color, depth_color_image = capture.get_color_image()
+        ret_color, color_image = capture.get_transformed_color_image()
 
-        # Get the colored depth
-        ret_depth, depth_color_image = capture.get_color_image()
+        # # Get the colored depth
+        # ret_depth, depth_color_image = capture.get_color_image()
 
-        if not ret_color or not ret_depth:
-            continue
+        # if not ret_color or not ret_depth:
+        #     continue
 
         # Plot the image
-        cv2.imshow('Depth Image', depth_color_image)
+        cv2.imshow('Depth Image', color_image)
 
         # Press q key to stop
         if cv2.waitKey(30) == ord('q'):

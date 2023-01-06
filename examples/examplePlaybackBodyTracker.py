@@ -35,15 +35,12 @@ if __name__ == "__main__":
 		body_frame = bodyTracker.update(capture=capture)
 
 		# Get the colored depth
-		ret, depth_color_image = capture.get_colored_depth_image()
-
-		if not ret:
-			continue
+		ret_depth, depth_color_image = capture.get_colored_depth_image()
 
 		# Get the colored body segmentation
-		ret, body_image_color = body_frame.get_segmentation_image()
+		ret_color, body_image_color = body_frame.get_segmentation_image()
 		
-		if not ret:
+		if not ret_color or not ret_depth:
 			continue
 			
 		# Combine both images

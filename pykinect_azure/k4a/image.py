@@ -4,6 +4,8 @@ import cv2
 from pykinect_azure.k4a import _k4a
 
 class Image:
+	_handle = None
+	buffer_pointer = None
 
 	def __init__(self, image_handle=None):
 

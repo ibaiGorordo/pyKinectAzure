@@ -36,10 +36,10 @@ if __name__ == "__main__":
 
 		# Combine both images
 		combined_image = cv2.addWeighted(color_image[:,:,:3], 0.7, depth_image, 0.3, 0)
-	
+
 		# Overlay body segmentation on depth image
 		cv2.imshow('Transformed Color Image',combined_image)
-		
+
 		# Press q key to stop
-		if cv2.waitKey(1) == ord('q'): 
+		if cv2.waitKey(1) == ord('q'):
 			break

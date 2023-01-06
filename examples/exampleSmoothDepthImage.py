@@ -28,6 +28,9 @@ if __name__ == "__main__":
 		# Get the color depth image from the capture
 		ret, raw_depth_image = capture.get_colored_depth_image()
 
+		if not ret:
+			continue
+
 		# Get the smooth depth image using Navier-Stokes based inpainting. maximum_hole_size defines 
 		# the maximum hole size to be filled, bigger hole size will take longer time to process
 		maximum_hole_size = 10
