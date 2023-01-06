@@ -23,10 +23,13 @@ if __name__ == "__main__":
 	bodyTracker = pykinect.start_body_tracker(calibration=playback_calibration)
 
 	cv2.namedWindow('Depth image with skeleton',cv2.WINDOW_NORMAL)
-	while playback.isOpened():
+	while True:
 
 		# Get camera capture
-		capture = playback.update()
+		ret, capture = playback.update()
+
+		if not ret:
+			break
 
 		# Get body tracker frame
 		body_frame = bodyTracker.update(capture=capture)
