@@ -65,7 +65,7 @@ class Configuration:
 		self.depth_delay_off_color_usec = configuration_handle.depth_delay_off_color_usec
 		self.wired_sync_mode = configuration_handle.wired_sync_mode
 		self.subordinate_delay_off_master_usec = configuration_handle.subordinate_delay_off_master_usec
-		self.disable_streaming_indictaor = configuration_handle.disable_streaming_indictaor
+		self.disable_streaming_indicator = configuration_handle.disable_streaming_indicator
 
 		self._handle = configuration_handle
 
