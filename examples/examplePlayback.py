@@ -18,17 +18,20 @@ if __name__ == "__main__":
 	# print(playback_config)
 
 	cv2.namedWindow('Depth Image',cv2.WINDOW_NORMAL)
-	while playback.isOpened():
+	while True:
 
 		# Get camera capture
-		capture = playback.update()
+		ret, capture = playback.update()
+
+		if not ret:
+			break
 
 		# Get the colored depth
 		ret, depth_color_image = capture.get_colored_depth_image()
-		
+
 		# Plot the image
 		cv2.imshow('Depth Image',depth_color_image)
-		
+
 		# Press q key to stop
-		if cv2.waitKey(30) == ord('q'): 
+		if cv2.waitKey(30) == ord('q'):
 			break

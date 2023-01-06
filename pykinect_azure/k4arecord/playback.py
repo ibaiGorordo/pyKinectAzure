@@ -25,12 +25,6 @@ class Playback:
 
 		_k4arecord.VERIFY(_k4arecord.k4a_playback_open(filepath.encode('utf-8'),self._handle),"Failed to open recording!")
 
-	def isOpened(self):
-		ret = _k4arecord.k4a_playback_get_next_capture(self._handle, _k4a.k4a_capture_t()) != _k4arecord.K4A_STREAM_RESULT_EOF
-		_k4arecord.k4a_playback_get_previous_capture(self._handle, _k4a.k4a_capture_t())
-
-		return ret
-
 	def update(self):
 		return self.get_next_capture()
 
@@ -65,25 +59,30 @@ class Playback:
 
 	def get_next_capture(self):
 		capture_handle = _k4a.k4a_capture_t()
-		_k4a.VERIFY(_k4arecord.k4a_playback_get_next_capture(self._handle, capture_handle),"Get next capture failed!")
-			
+
 		if self.is_capture_initialized():
+			self._capture.release_handle()
 			self._capture._handle = capture_handle
-		else :
+		else:
 			self._capture = Capture(capture_handle, self.calibration.handle())
 
-		return self._capture
+		ret = _k4arecord.k4a_playback_get_next_capture(self._handle, capture_handle) != _k4arecord.K4A_STREAM_RESULT_EOF
+
+
+		return ret, self._capture
 
 	def get_previous_capture(self):
 		capture_handle = _k4a.k4a_capture_t()
-		_k4a.VERIFY(_k4arecord.k4a_playback_get_previous_capture(self._handle, capture_handle),"Get previous capture failed!")
-			
+
 		if self.is_capture_initialized():
+			self._capture.release_handle()
 			self._capture._handle = capture_handle
-		else :
+		else:
 			self._capture = Capture(capture_handle, self.calibration.handle())
 
-		return self._capture
+		ret = _k4arecord.k4a_playback_get_previous_capture(self._handle, capture_handle) != _k4arecord.K4A_STREAM_RESULT_EOF
+
+		return ret, self._capture
 
 	def get_next_imu_sample(self):
 		imu_sample_struct = _k4a.k4a_imu_sample_t()
