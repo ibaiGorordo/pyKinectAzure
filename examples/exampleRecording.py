@@ -26,7 +26,7 @@ if __name__ == "__main__":
 		capture = device.update()
 
 		# Get the color depth image from the capture
-		ret, depth_image = capture.get_colored_depth_image()
+		ret, depth_image = capture.get_color_image()
 
 		if not ret:
 			continue

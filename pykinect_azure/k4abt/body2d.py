@@ -35,7 +35,7 @@ class Body2d:
 			self._handle = None
 
 	def initialize_skeleton(self):
-		joints = np.ndarray((K4ABT_JOINT_COUNT,),dtype=np.object)
+		joints = np.ndarray((K4ABT_JOINT_COUNT,),dtype=np.object_)
 
 		for i in range(K4ABT_JOINT_COUNT):
 			joints[i] = Joint2d(self._handle.skeleton.joints2D[i], i)

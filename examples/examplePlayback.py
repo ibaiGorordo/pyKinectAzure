@@ -27,7 +27,7 @@ if __name__ == "__main__":
 			break
 
 		# Get the colored depth
-		ret, depth_color_image = capture.get_colored_depth_image()
+		ret, depth_color_image = capture.get_color_image()
 
 		# Plot the image
 		cv2.imshow('Depth Image',depth_color_image)
