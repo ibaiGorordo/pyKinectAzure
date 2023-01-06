@@ -37,6 +37,9 @@ if __name__ == "__main__":
 		# Get the colored depth
 		ret, depth_color_image = capture.get_colored_depth_image()
 
+		if not ret:
+			continue
+
 		# Get the colored body segmentation
 		ret, body_image_color = body_frame.get_segmentation_image()
 		
@@ -53,5 +56,5 @@ if __name__ == "__main__":
 		cv2.imshow('Depth image with skeleton',combined_image)
 
 		# Press q key to stop
-		if cv2.waitKey(1) == ord('q'):  
+		if cv2.waitKey(1) == ord('q'):
 			break

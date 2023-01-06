@@ -6,32 +6,38 @@ import pykinect_azure as pykinect
 
 if __name__ == "__main__":
 
-	video_filename = "output.mkv"
+    video_filename = "output.mkv"
 
-	# Initialize the library, if the library is not found, add the library path as argument
-	pykinect.initialize_libraries()
+    # Initialize the library, if the library is not found, add the library path as argument
+    pykinect.initialize_libraries()
 
-	# Start playback
-	playback = pykinect.start_playback(video_filename)
+    # Start playback
+    playback = pykinect.start_playback(video_filename)
 
-	playback_config = playback.get_record_configuration()
-	# print(playback_config)
+    playback_config = playback.get_record_configuration()
+    # print(playback_config)
 
-	cv2.namedWindow('Depth Image',cv2.WINDOW_NORMAL)
-	while True:
+    cv2.namedWindow('Depth Image', cv2.WINDOW_NORMAL)
+    while True:
 
-		# Get camera capture
-		ret, capture = playback.update()
+        # Get camera capture
+        ret, capture = playback.update()
 
-		if not ret:
-			break
+        if not ret:
+            break
 
-		# Get the colored depth
-		ret, depth_color_image = capture.get_color_image()
+        # Get color image
+        ret_color, depth_color_image = capture.get_color_image()
 
-		# Plot the image
-		cv2.imshow('Depth Image',depth_color_image)
+        # Get the colored depth
+        ret_depth, depth_color_image = capture.get_color_image()
 
-		# Press q key to stop
-		if cv2.waitKey(30) == ord('q'):
-			break
+        if not ret_color or not ret_depth:
+            continue
+
+        # Plot the image
+        cv2.imshow('Depth Image', depth_color_image)
+
+        # Press q key to stop
+        if cv2.waitKey(30) == ord('q'):
+            break
