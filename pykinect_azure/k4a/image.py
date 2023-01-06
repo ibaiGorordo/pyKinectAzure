@@ -5,16 +5,18 @@ from pykinect_azure.k4a import _k4a
 
 class Image:
 
-	def __init__(self, image_handle):
+	def __init__(self, image_handle=None):
 
 		self._handle = image_handle
+		# Get the pointer to the buffer containing the image data
+		self.buffer_pointer = self.get_buffer() if self.is_valid() else None
 
 	def __del__(self):
 
 		self.reset()
 
 	def is_valid(self):
-		return self._handle
+		return self._handle or self.buffer_pointer is not None
 
 	def handle(self):
 		return self._handle
@@ -53,7 +55,7 @@ class Image:
 
 
 	def get_buffer(self):
-		if not self.is_valid():
+		if not self._handle:
 			return None
 
 		return _k4a.k4a_image_get_buffer(self._handle)
@@ -86,10 +88,8 @@ class Image:
 		return int(_k4a.k4a_image_get_stride_bytes(self._handle))
 
 	def to_numpy(self):
-		# Get the pointer to the buffer containing the image data
-		buffer_pointer = self.get_buffer()
-		
-		if not buffer_pointer:
+
+		if not self.is_valid():
 			return False, None
 
 		# Get the size of the buffer
@@ -101,7 +101,7 @@ class Image:
 		image_format = self.get_format()
 
 		# Read the data in the buffer
-		buffer_array = np.ctypeslib.as_array(buffer_pointer,shape=(image_size,))
+		buffer_array = np.ctypeslib.as_array(self.buffer_pointer,shape=(image_size,))
 
 		# Parse buffer based on image formats
 		if image_format == _k4a.K4A_IMAGE_FORMAT_COLOR_MJPG:
