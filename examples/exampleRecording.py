@@ -11,6 +11,7 @@ if __name__ == "__main__":
 
 	# Modify camera configuration
 	device_config = pykinect.default_configuration
+	device_config.color_format = pykinect.K4A_IMAGE_FORMAT_COLOR_BGRA32
 	device_config.color_resolution = pykinect.K4A_COLOR_RESOLUTION_1080P
 	device_config.depth_mode = pykinect.K4A_DEPTH_MODE_WFOV_2X2BINNED
 	#print(device_config)
@@ -26,7 +27,7 @@ if __name__ == "__main__":
 		capture = device.update()
 
 		# Get the color depth image from the capture
-		ret, depth_image = capture.get_color_image()
+		ret, depth_image = capture.get_colored_depth_image()
 
 		if not ret:
 			continue

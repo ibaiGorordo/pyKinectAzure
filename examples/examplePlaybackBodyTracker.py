@@ -34,17 +34,21 @@ if __name__ == "__main__":
 		# Get body tracker frame
 		body_frame = bodyTracker.update(capture=capture)
 
+		# Get color image
+		ret_color, color_image = capture.get_transformed_color_image()
+
 		# Get the colored depth
 		ret_depth, depth_color_image = capture.get_colored_depth_image()
 
 		# Get the colored body segmentation
-		ret_color, body_image_color = body_frame.get_segmentation_image()
+		ret_seg, body_image_color = body_frame.get_segmentation_image()
 		
-		if not ret_color or not ret_depth:
+		if not ret_color or not ret_depth or not ret_seg:
 			continue
 			
 		# Combine both images
 		combined_image = cv2.addWeighted(depth_color_image, 0.6, body_image_color, 0.4, 0)
+		combined_image = cv2.addWeighted(color_image[:, :, :3], 0.7, combined_image, 0.3, 0)
 
 		# Draw the skeletons
 		combined_image = body_frame.draw_bodies(combined_image)
