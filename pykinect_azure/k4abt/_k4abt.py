@@ -1,4 +1,5 @@
 import ctypes
+import platform
 import sys
 import traceback
 
@@ -17,6 +18,31 @@ def setup_library(module_k4abt_path):
 	except Exception as e:
 		print("Failed to load body tracker library", e)
 		sys.exit(1)
+	setup_onnx_provider()
+
+def setup_onnx_provider():
+	if platform.system() == "Windows":
+		setup_onnx_provider_windows()
+	elif platform.system() == "Linux":
+		setup_onnx_provider_linux()
+def setup_onnx_provider_linux():
+	k4abt_tracker_default_configuration.processing_mode = K4ABT_TRACKER_PROCESSING_MODE_GPU_CUDA
+	try:
+		ctypes.cdll.LoadLibrary("libonnxruntime_providers_cuda.so")
+	except Exception as e:
+		ctypes.cdll.LoadLibrary("libonnxruntime.so.1.10.0")
+
+def setup_onnx_provider_windows():
+	try:
+		ctypes.cdll.LoadLibrary("C:/Program Files/Azure Kinect Body Tracking SDK/tools/directml.dll")
+	except Exception as e:
+		try:
+			ctypes.cdll.LoadLibrary(
+				"C:/Program Files/Azure Kinect Body Tracking SDK/sdk/windows-desktop/amd64/release/bin/onnxruntime_providers_cuda.dll")
+			k4abt_tracker_default_configuration.processing_mode = K4ABT_TRACKER_PROCESSING_MODE_GPU_CUDA
+		except Exception as e:
+			k4abt_tracker_default_configuration.processing_mode = K4ABT_TRACKER_PROCESSING_MODE_CPU
+
 
 def k4abt_tracker_create(sensor_calibration, config, tracker_handle):
 	"""

@@ -2,7 +2,6 @@ import ctypes
 
 from pykinect_azure.k4a import _k4a, Device, default_configuration
 from pykinect_azure.k4abt import _k4abt, Tracker
-from pykinect_azure.k4abt._k4abtTypes import k4abt_tracker_default_configuration, K4ABT_TRACKER_PROCESSING_MODE_GPU_CUDA, K4ABT_TRACKER_PROCESSING_MODE_CPU
 from pykinect_azure.k4arecord import _k4arecord
 from pykinect_azure.k4arecord.playback import Playback
 from pykinect_azure.utils import get_k4a_module_path, get_k4abt_module_path, get_k4arecord_module_path
@@ -36,19 +35,6 @@ def init_k4a(module_k4a_path):
 def init_k4abt(module_k4abt_path):
 
     _k4abt.setup_library(module_k4abt_path)
-    init_onnx_provider()
-
-def init_onnx_provider():
-
-    try:
-        ctypes.cdll.LoadLibrary("C:/Program Files/Azure Kinect Body Tracking SDK/tools/directml.dll")
-    except Exception as e:
-        try:
-            ctypes.cdll.LoadLibrary(
-                "C:/Program Files/Azure Kinect Body Tracking SDK/sdk/windows-desktop/amd64/release/bin/onnxruntime_providers_cuda.dll")
-            k4abt_tracker_default_configuration.processing_mode = K4ABT_TRACKER_PROCESSING_MODE_GPU_CUDA
-        except Exception as e:
-            k4abt_tracker_default_configuration.processing_mode = K4ABT_TRACKER_PROCESSING_MODE_CPU
 
 def init_k4arecord(module_k4arecord_path):
 
