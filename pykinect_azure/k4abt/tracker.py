@@ -6,8 +6,9 @@ from pykinect_azure.k4a._k4atypes import K4A_WAIT_INFINITE
 from pykinect_azure.utils import get_k4abt_lite_model_path
 
 class Tracker:
-	def __init__(self, calibration, model_type):
+	def __init__(self, calibration, model_type, tracker_configuration):
 
+		self.tracker_configuration = tracker_configuration
 		self.calibration = calibration
 		self._handle = self.create(model_type)
 		self.frame = None
@@ -62,11 +63,14 @@ class Tracker:
 
 	def create(self, model_type):
 
-		tracker_config = self.get_tracker_configuration(model_type)
+		if model_type == _k4abt.K4ABT_LITE_MODEL:
+			self.tracker_configuration.model_path = get_k4abt_lite_model_path()
 
 		tracker_handle = _k4abt.k4abt_tracker_t()
-		_k4abt.VERIFY(_k4abt.k4abt_tracker_create(self.calibration.handle(), tracker_config, tracker_handle), "Body tracker initialization failed!")
-		
+		_k4abt.VERIFY(_k4abt.k4abt_tracker_create(self.calibration.handle(),
+												  self.tracker_configuration.handle(),
+												  tracker_handle), "Body tracker initialization failed!")
+
 		return tracker_handle
 
 	def get_tracker_configuration(self, model_type):
