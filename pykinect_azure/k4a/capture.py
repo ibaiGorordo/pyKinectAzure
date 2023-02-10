@@ -7,11 +7,11 @@ from pykinect_azure.utils.postProcessing import smooth_depth_image
 
 class Capture:
 
-	def __init__(self, capture_handle, calibration_handle):
+	def __init__(self, capture_handle, calibration):
 
 		self._handle = capture_handle
-		self.calibration_handle = calibration_handle
-		self.camera_transform = Transformation(calibration_handle)
+		self.calibration = calibration
+		self.camera_transform = Transformation(calibration)
 
 	def __del__(self):
 		self.reset()
