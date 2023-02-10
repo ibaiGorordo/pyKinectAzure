@@ -31,12 +31,12 @@ if __name__ == "__main__":
 		capture = device.update()
 
 		# Get the 3D point cloud
-		ret, points = capture.get_transformed_pointcloud()
+		ret_point, points = capture.get_transformed_pointcloud()
 
 		# Get the color image in the depth camera axis
-		ret, color_image = capture.get_color_image()
+		ret_color, color_image = capture.get_color_image()
 
-		if not ret:
+		if not ret_color or not ret_point:
 			continue
 
 		open3dVisualizer(points, color_image)
