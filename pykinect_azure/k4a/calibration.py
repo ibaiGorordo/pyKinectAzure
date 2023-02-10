@@ -70,9 +70,9 @@ class Calibration:
         return target_point3d
 
     def convert_2d_to_3d(self, source_point2d: _k4a.k4a_float2_t,
-						 source_depth: float,
-						 source_camera: _k4a.k4a_calibration_type_t,
-						 target_camera: _k4a.k4a_calibration_type_t) -> _k4a.k4a_float3_t():
+                         source_depth: float,
+                         source_camera: _k4a.k4a_calibration_type_t,
+                         target_camera: _k4a.k4a_calibration_type_t) -> _k4a.k4a_float3_t():
 
         target_point3d = _k4a.k4a_float3_t()
         valid = ctypes.c_int()
@@ -84,8 +84,8 @@ class Calibration:
         return target_point3d
 
     def convert_3d_to_2d(self, source_point3d: _k4a.k4a_float3_t,
-						 source_camera: _k4a.k4a_calibration_type_t,
-						 target_camera: _k4a.k4a_calibration_type_t) -> _k4a.k4a_float2_t():
+                         source_camera: _k4a.k4a_calibration_type_t,
+                         target_camera: _k4a.k4a_calibration_type_t) -> _k4a.k4a_float2_t():
 
         target_point2d = _k4a.k4a_float2_t()
         valid = ctypes.c_int()
@@ -97,9 +97,9 @@ class Calibration:
         return target_point2d
 
     def convert_2d_to_2d(self, source_point2d: _k4a.k4a_float2_t,
-						 source_depth: float,
-						 source_camera: _k4a.k4a_calibration_type_t,
-						 target_camera: _k4a.k4a_calibration_type_t) -> _k4a.k4a_float2_t():
+                         source_depth: float,
+                         source_camera: _k4a.k4a_calibration_type_t,
+                         target_camera: _k4a.k4a_calibration_type_t) -> _k4a.k4a_float2_t():
 
         target_point2d = _k4a.k4a_float2_t()
         valid = ctypes.c_int()
