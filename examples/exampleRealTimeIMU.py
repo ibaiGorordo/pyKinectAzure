@@ -1,8 +1,6 @@
-import sys
 import numpy as np
 import matplotlib.pyplot as plt
 
-sys.path.insert(1, '../')
 import pykinect_azure as pykinect
 
 def handle_close(evt):

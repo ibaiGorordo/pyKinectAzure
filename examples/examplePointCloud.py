@@ -1,7 +1,5 @@
-import sys
 import cv2
 
-sys.path.insert(1, '../')
 import pykinect_azure as pykinect
 from pykinect_azure.utils import Open3dVisualizer
 

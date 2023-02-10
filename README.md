@@ -20,6 +20,11 @@ The objective of this repository is to combine the strong points of both reposit
 * **numpy**: required for the matrix calculations
 * **opencv-python**: Required for the image transformations and visualization.
 
+## Installation
+```commandline
+pip install pykinect_azure
+```
+
 ## How to use this library
 
 * The library has **been tested in Windows 10 and Ubuntu 20.04** with the Kinect Azure SDK 1.4.0 and 1.4.1, it should also work with other operating systems.
