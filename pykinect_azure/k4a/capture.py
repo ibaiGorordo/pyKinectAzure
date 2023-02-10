@@ -60,6 +60,9 @@ class Capture:
 	def get_pointcloud_object(self, calibration_type = _k4a.K4A_CALIBRATION_TYPE_DEPTH):
 		return self.camera_transform.depth_image_to_point_cloud(self.get_depth_image_object(), calibration_type)
 
+	def get_transformed_pointcloud_object(self):
+		return self.camera_transform.depth_image_to_point_cloud(self.get_transformed_depth_object(), _k4a.K4A_CALIBRATION_TYPE_COLOR)
+
 	def get_color_image(self):
 		return self.get_color_image_object().to_numpy()
 
@@ -98,6 +101,11 @@ class Capture:
 
 	def get_pointcloud(self, calibration_type = _k4a.K4A_CALIBRATION_TYPE_DEPTH):
 		ret, points = self.get_pointcloud_object(calibration_type).to_numpy()
+		points = points.reshape((-1, 3))
+		return ret, points
+
+	def get_transformed_pointcloud(self):
+		ret, points = self.get_transformed_pointcloud_object().to_numpy()
 		points = points.reshape((-1, 3))
 		return ret, points
 
