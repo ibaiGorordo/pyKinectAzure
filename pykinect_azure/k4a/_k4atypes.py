@@ -285,6 +285,9 @@ class _xy(ctypes.Structure):
 	def __iter__(self):
 		return {'x':self.x, 'y':self.y}
 
+	def __str__(self):
+		return str(self.__iter__())
+
 
 class k4a_float2_t(ctypes.Union):
 	_fields_= [
@@ -301,6 +304,9 @@ class k4a_float2_t(ctypes.Union):
 		xy.update({'v':[v for v in self.v]})
 		return xy
 
+	def __str__(self):
+		return self.xy.__str__()
+
 class _xyz(ctypes.Structure):
 	_fields_= [
 		("x", ctypes.c_float),
@@ -310,6 +316,9 @@ class _xyz(ctypes.Structure):
 
 	def __iter__(self):
 		return {'x':self.x, 'y':self.y, 'z':self.z}
+
+	def __str__(self):
+		return str(self.__iter__())
 
 
 class k4a_float3_t(ctypes.Union):
@@ -326,6 +335,9 @@ class k4a_float3_t(ctypes.Union):
 		xyz = self.xyz.__iter__()
 		xyz.update({'v':[v for v in self.v]})
 		return xyz
+
+	def __str__(self):
+		return self.xyz.__str__()
 
 
 class k4a_imu_sample_t(ctypes.Structure):

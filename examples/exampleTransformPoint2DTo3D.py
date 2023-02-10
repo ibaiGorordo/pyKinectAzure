@@ -35,15 +35,15 @@ if __name__ == "__main__":
 		if not ret_color or not ret_depth:
 			continue
 
-		pix_x = 100
-		pix_y = 200
-		depth = transformed_depth_image[pix_y, pix_x]
-		print(depth)
+		pix_x = color_image.shape[1] // 2
+		pix_y = color_image.shape[0] // 2
+		rgb_depth = transformed_depth_image[pix_y, pix_x]
 
 		pixels = k4a_float2_t((pix_x, pix_y))
 
-		pos3d = device.calibration.convert_2d_to_3d(pixels, depth, K4A_CALIBRATION_TYPE_COLOR, K4A_CALIBRATION_TYPE_DEPTH)
-		print(pos3d.xyz.x, pos3d.xyz.y, pos3d.xyz.z)
+		pos3d_color = device.calibration.convert_2d_to_3d(pixels, rgb_depth, K4A_CALIBRATION_TYPE_COLOR, K4A_CALIBRATION_TYPE_COLOR)
+		pos3d_depth = device.calibration.convert_2d_to_3d(pixels, rgb_depth, K4A_CALIBRATION_TYPE_COLOR, K4A_CALIBRATION_TYPE_DEPTH)
+		print(f"RGB depth: {rgb_depth}, RGB pos3D: {pos3d_color}, Depth pos3D: {pos3d_depth}")
 
 		# Overlay body segmentation on depth image
 		cv2.imshow('Transformed Color Image',color_image)

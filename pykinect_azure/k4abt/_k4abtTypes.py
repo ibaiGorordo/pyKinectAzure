@@ -126,6 +126,9 @@ class _wxyz(ctypes.Structure):
 	def __iter__(self):
 		return {'w':self.w, 'x':self.x, 'y':self.y, 'z':self.z}
 
+	def __str__(self):
+		return f'w:{self.w} x:{self.x} y:{self.y} z:{self.z}'
+
 
 class k4a_quaternion_t(ctypes.Union):
 	_fields_= [
@@ -141,6 +144,9 @@ class k4a_quaternion_t(ctypes.Union):
 		wxyz = self.wxyz.__iter__()
 		wxyz.update({'v':[v for v in self.v]})
 		return wxyz
+
+	def __str__(self):
+		return self.wxyz.__str__()
 
 #class k4abt_joint_confidence_level_t(CtypeIntEnum):
 K4ABT_JOINT_CONFIDENCE_NONE = 0
