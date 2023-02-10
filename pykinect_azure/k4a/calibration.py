@@ -117,7 +117,7 @@ class Calibration:
         valid = ctypes.c_int()
 
         _k4a.VERIFY(
-            _k4a.k4a._k4a_calibration_color_2d_to_depth_2d(self._handle, source_point2d, depth_image, target_point2d,
+            _k4a.k4a_calibration_color_2d_to_depth_2d(self._handle, source_point2d, depth_image, target_point2d,
                                                            valid), "Failed to convert from Color 2D to Depth 2D")
 
         return target_point2d
