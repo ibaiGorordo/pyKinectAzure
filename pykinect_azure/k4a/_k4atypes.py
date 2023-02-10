@@ -292,6 +292,10 @@ class k4a_float2_t(ctypes.Union):
 		("v", ctypes.c_float * 2)
 	]
 
+	def __init__(self, v):
+		super().__init__()
+		self.xy = _xy(v[0], v[1])
+
 	def __iter__(self):
 		xy = self.xy.__iter__()
 		xy.update({'v':[v for v in self.v]})
@@ -313,6 +317,10 @@ class k4a_float3_t(ctypes.Union):
 		("xyz", _xyz),
 		("v", ctypes.c_float * 3)
 	]
+
+	def __init__(self, v):
+		super().__init__()
+		self.xyz = _xyz(v[0], v[1], v[2])
 
 	def __iter__(self):
 		xyz = self.xyz.__iter__()
