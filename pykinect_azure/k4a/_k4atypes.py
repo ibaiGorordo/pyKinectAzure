@@ -292,7 +292,7 @@ class k4a_float2_t(ctypes.Union):
 		("v", ctypes.c_float * 2)
 	]
 
-	def __init__(self, v):
+	def __init__(self, v=(0,0)):
 		super().__init__()
 		self.xy = _xy(v[0], v[1])
 
@@ -318,7 +318,7 @@ class k4a_float3_t(ctypes.Union):
 		("v", ctypes.c_float * 3)
 	]
 
-	def __init__(self, v):
+	def __init__(self, v=(0,0,0)):
 		super().__init__()
 		self.xyz = _xyz(v[0], v[1], v[2])
 

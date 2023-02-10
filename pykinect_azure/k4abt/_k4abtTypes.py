@@ -133,7 +133,7 @@ class k4a_quaternion_t(ctypes.Union):
 		("v", ctypes.c_float * 4)
 	]
 
-	def __init__(self, q):
+	def __init__(self, q=(0,0,0,0)):
 		super().__init__()
 		self.wxyz = _wxyz(q[0], q[1], q[2], q[3])
 
@@ -157,7 +157,7 @@ class _k4abt_joint_t(ctypes.Structure):
 		("confidence_level", ctypes.c_int),
 	]
 
-	def __init__(self, position, orientation, confidence_level):
+	def __init__(self, position=(0,0,0), orientation=(0,0,0,0), confidence_level=0):
 		super().__init__()
 		self.position = k4a_float3_t(position)
 		self.orientation = k4a_quaternion_t(orientation)
@@ -175,7 +175,7 @@ class k4abt_skeleton_t(ctypes.Structure):
 		("joints", _k4abt_joint_t * K4ABT_JOINT_COUNT),
 	]
 
-	def __init__(self, joints):
+	def __init__(self, joints=(_k4abt_joint_t() for i in range(K4ABT_JOINT_COUNT))):
 		super().__init__()
 		self.joints = (_k4abt_joint_t * K4ABT_JOINT_COUNT)(*joints)
 
@@ -189,7 +189,7 @@ class k4abt_body_t(ctypes.Structure):
 		("skeleton", k4abt_skeleton_t),
 	]
 
-	def __init__(self, id, skeleton):
+	def __init__(self, id=0, skeleton=k4abt_skeleton_t()):
 		super().__init__()
 		self.id = id
 		self.skeleton = skeleton
@@ -203,7 +203,7 @@ class _k4abt_joint2D_t(ctypes.Structure):
 		("confidence_level", ctypes.c_int),
 	]
 
-	def __init__(self, position, confidence_level):
+	def __init__(self, position=(0,0), confidence_level=0):
 		super().__init__()
 		self.position = k4a_float2_t(position)
 		self.confidence_level = confidence_level
@@ -219,7 +219,7 @@ class k4abt_skeleton2D_t(ctypes.Structure):
 		("joints2D", _k4abt_joint2D_t * K4ABT_JOINT_COUNT),
 	]
 
-	def __init__(self, joints):
+	def __init__(self, joints=(_k4abt_joint2D_t() for i in range(K4ABT_JOINT_COUNT))):
 		super().__init__()
 		self.joints2D = (_k4abt_joint2D_t * K4ABT_JOINT_COUNT)(*joints)
 
@@ -232,7 +232,7 @@ class k4abt_body2D_t(ctypes.Structure):
 		("skeleton", k4abt_skeleton2D_t),
 	]
 
-	def __init__(self, id, skeleton):
+	def __init__(self, id=0, skeleton=k4abt_skeleton2D_t()):
 		super().__init__()
 		self.id = id
 		self.skeleton = skeleton

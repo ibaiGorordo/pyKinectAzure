@@ -114,7 +114,27 @@ def test_body2d_t():
 	assert body2d_val.id == body_id
 	check_skeleton2d_t(body2d_val.skeleton, skeleton2d_pos_array, skeleton2d_conf_array)
 
+def test_empty_values():
+	float2_val = pykinect.k4a_float2_t()
+	check_float2_t(float2_val, [0,0])
 
+	float3_val = pykinect.k4a_float3_t()
+	check_float3_t(float3_val, [0,0,0])
+
+	quat_val = pykinect.k4a_quaternion_t()
+	check_quat_t(quat_val, [0,0,0,0])
+
+	joint_val = pykinect.k4abt_joint_t()
+	check_joint_t(joint_val, [0,0,0], [0,0,0,0], 0)
+
+	joint2d_val = pykinect.k4abt_joint2D_t()
+	check_joint2d_t(joint2d_val, [0,0], 0)
+
+	skeleton_val = pykinect.k4abt_skeleton_t()
+	check_skeleton_t(skeleton_val, [[0,0,0] for i in range(pykinect.K4ABT_JOINT_COUNT)], [[0,0,0,0] for i in range(pykinect.K4ABT_JOINT_COUNT)], [0 for i in range(pykinect.K4ABT_JOINT_COUNT)])
+
+	skeleton2d_val = pykinect.k4abt_skeleton2D_t()
+	check_skeleton2d_t(skeleton2d_val, [[0,0] for i in range(pykinect.K4ABT_JOINT_COUNT)], [0 for i in range(pykinect.K4ABT_JOINT_COUNT)])
 
 if __name__ == "__main__":
 
@@ -127,5 +147,7 @@ if __name__ == "__main__":
 	test_skeleton2d_t()
 	test_body_t()
 	test_body2d_t()
+
+	test_empty_values()
 
 
