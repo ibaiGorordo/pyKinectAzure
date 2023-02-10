@@ -3,7 +3,7 @@ import cv2
 
 sys.path.insert(1, '../')
 import pykinect_azure as pykinect
-from pykinect_azure import K4A_CALIBRATION_TYPE_COLOR, k4a_float2_t
+from pykinect_azure import K4A_CALIBRATION_TYPE_COLOR, K4A_CALIBRATION_TYPE_DEPTH, k4a_float2_t
 
 if __name__ == "__main__":
 
@@ -40,11 +40,9 @@ if __name__ == "__main__":
 		depth = transformed_depth_image[pix_y, pix_x]
 		print(depth)
 
-		pixels = k4a_float2_t()
-		pixels.xy.x = pix_x
-		pixels.xy.y = pix_y
+		pixels = k4a_float2_t((pix_x, pix_y))
 
-		pos3d = device.calibration.convert_2d_to_3d(pixels, depth, K4A_CALIBRATION_TYPE_COLOR, K4A_CALIBRATION_TYPE_COLOR)
+		pos3d = device.calibration.convert_2d_to_3d(pixels, depth, K4A_CALIBRATION_TYPE_COLOR, K4A_CALIBRATION_TYPE_DEPTH)
 		print(pos3d.xyz.x, pos3d.xyz.y, pos3d.xyz.z)
 
 		# Overlay body segmentation on depth image
