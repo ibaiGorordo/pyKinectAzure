@@ -1,7 +1,7 @@
 import cv2
 
 import pykinect_azure as pykinect
-from pykinect_azure.utils import Open3dVisualizer
+from utils import Open3dVisualizer
 
 if __name__ == "__main__":
 
