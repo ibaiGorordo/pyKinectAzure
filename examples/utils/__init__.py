@@ -1,1 +1,1 @@
-from plot3dUtils import Open3dVisualizer
+from .plot3dUtils import Open3dVisualizer
