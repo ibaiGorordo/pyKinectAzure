@@ -106,6 +106,9 @@ class Capture:
 
 	def get_transformed_pointcloud(self):
 		ret, points = self.get_transformed_pointcloud_object().to_numpy()
+		if not ret:
+			return ret, []
+
 		points = points.reshape((-1, 3))
 		return ret, points
 
