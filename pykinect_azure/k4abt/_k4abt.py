@@ -31,6 +31,7 @@ def setup_onnx_provider_linux():
 		ctypes.cdll.LoadLibrary("libonnxruntime_providers_cuda.so")
 	except Exception as e:
 		ctypes.cdll.LoadLibrary("libonnxruntime.so.1.10.0")
+		k4abt_tracker_default_configuration.processing_mode = K4ABT_TRACKER_PROCESSING_MODE_CPU
 
 def setup_onnx_provider_windows():
 	try:
