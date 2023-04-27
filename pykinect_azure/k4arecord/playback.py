@@ -64,7 +64,7 @@ class Playback:
 			self._capture.release_handle()
 			self._capture._handle = capture_handle
 		else:
-			self._capture = Capture(capture_handle, self.calibration.handle())
+			self._capture = Capture(capture_handle, self.calibration)
 
 		ret = _k4arecord.k4a_playback_get_next_capture(self._handle, capture_handle) != _k4arecord.K4A_STREAM_RESULT_EOF
 
@@ -78,7 +78,7 @@ class Playback:
 			self._capture.release_handle()
 			self._capture._handle = capture_handle
 		else:
-			self._capture = Capture(capture_handle, self.calibration.handle())
+			self._capture = Capture(capture_handle, self.calibration)
 
 		ret = _k4arecord.k4a_playback_get_previous_capture(self._handle, capture_handle) != _k4arecord.K4A_STREAM_RESULT_EOF
 

@@ -1,4 +1,5 @@
 # pyKinectAzure
+[![PyPI](https://img.shields.io/pypi/v/pykinect-azure?color=2BAF2B)](https://pypi.org/project/pykinect-azure/)
 
 ![Azure kinect color and depth combination](https://github.com/ibaiGorordo/pyKinectAzure/blob/master/doc/images/outputImage.jpg)
 
@@ -18,6 +19,11 @@ The objective of this repository is to combine the strong points of both reposit
 * **ctypes**: required to read the library.
 * **numpy**: required for the matrix calculations
 * **opencv-python**: Required for the image transformations and visualization.
+
+## Installation
+```commandline
+pip install pykinect_azure
+```
 
 ## How to use this library
 

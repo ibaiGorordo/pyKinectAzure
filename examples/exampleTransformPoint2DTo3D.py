@@ -1,6 +1,7 @@
 import cv2
 
 import pykinect_azure as pykinect
+from pykinect_azure import K4A_CALIBRATION_TYPE_COLOR, K4A_CALIBRATION_TYPE_DEPTH, k4a_float2_t
 
 if __name__ == "__main__":
 
@@ -17,7 +18,7 @@ if __name__ == "__main__":
 	# Start device
 	device = pykinect.start_device(config=device_config)
 
-	cv2.namedWindow('Transformed Color Depth Image',cv2.WINDOW_NORMAL)
+	cv2.namedWindow('Transformed Color Image',cv2.WINDOW_NORMAL)
 	while True:
 		
 		# Get capture
@@ -27,17 +28,24 @@ if __name__ == "__main__":
 		ret_color, color_image = capture.get_color_image()
 
 		# Get the colored depth
-		ret_depth, transformed_colored_depth_image = capture.get_transformed_colored_depth_image()
+		ret_depth, transformed_depth_image = capture.get_transformed_depth_image()
 
 		if not ret_color or not ret_depth:
 			continue
 
-		# Combine both images
-		combined_image = cv2.addWeighted(color_image[:,:,:3], 0.7, transformed_colored_depth_image, 0.3, 0)
-	
+		pix_x = color_image.shape[1] // 2
+		pix_y = color_image.shape[0] // 2
+		rgb_depth = transformed_depth_image[pix_y, pix_x]
+
+		pixels = k4a_float2_t((pix_x, pix_y))
+
+		pos3d_color = device.calibration.convert_2d_to_3d(pixels, rgb_depth, K4A_CALIBRATION_TYPE_COLOR, K4A_CALIBRATION_TYPE_COLOR)
+		pos3d_depth = device.calibration.convert_2d_to_3d(pixels, rgb_depth, K4A_CALIBRATION_TYPE_COLOR, K4A_CALIBRATION_TYPE_DEPTH)
+		print(f"RGB depth: {rgb_depth}, RGB pos3D: {pos3d_color}, Depth pos3D: {pos3d_depth}")
+
 		# Overlay body segmentation on depth image
-		cv2.imshow('Transformed Color Depth Image',combined_image)
-		
+		cv2.imshow('Transformed Color Image',color_image)
+
 		# Press q key to stop
-		if cv2.waitKey(1) == ord('q'): 
+		if cv2.waitKey(1) == ord('q'):
 			break

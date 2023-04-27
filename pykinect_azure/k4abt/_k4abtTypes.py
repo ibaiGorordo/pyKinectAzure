@@ -126,6 +126,9 @@ class _wxyz(ctypes.Structure):
 	def __iter__(self):
 		return {'w':self.w, 'x':self.x, 'y':self.y, 'z':self.z}
 
+	def __str__(self):
+		return f'w:{self.w} x:{self.x} y:{self.y} z:{self.z}'
+
 
 class k4a_quaternion_t(ctypes.Union):
 	_fields_= [
@@ -133,10 +136,17 @@ class k4a_quaternion_t(ctypes.Union):
 		("v", ctypes.c_float * 4)
 	]
 
+	def __init__(self, q=(0,0,0,0)):
+		super().__init__()
+		self.wxyz = _wxyz(q[0], q[1], q[2], q[3])
+
 	def __iter__(self):
 		wxyz = self.wxyz.__iter__()
 		wxyz.update({'v':[v for v in self.v]})
 		return wxyz
+
+	def __str__(self):
+		return self.wxyz.__str__()
 
 #class k4abt_joint_confidence_level_t(CtypeIntEnum):
 K4ABT_JOINT_CONFIDENCE_NONE = 0
@@ -153,6 +163,12 @@ class _k4abt_joint_t(ctypes.Structure):
 		("confidence_level", ctypes.c_int),
 	]
 
+	def __init__(self, position=(0,0,0), orientation=(0,0,0,0), confidence_level=0):
+		super().__init__()
+		self.position = k4a_float3_t(position)
+		self.orientation = k4a_quaternion_t(orientation)
+		self.confidence_level = confidence_level
+
 	def __iter__(self):
 		return {'position':self.position.__iter__(), 
 				'orientation':self.orientation.__iter__(),
@@ -165,6 +181,10 @@ class k4abt_skeleton_t(ctypes.Structure):
 		("joints", _k4abt_joint_t * K4ABT_JOINT_COUNT),
 	]
 
+	def __init__(self, joints=(_k4abt_joint_t() for i in range(K4ABT_JOINT_COUNT))):
+		super().__init__()
+		self.joints = (_k4abt_joint_t * K4ABT_JOINT_COUNT)(*joints)
+
 	def __iter__(self):
 		return {'joints': [joint.__iter__() for joint in self.joints]}
 
@@ -175,6 +195,11 @@ class k4abt_body_t(ctypes.Structure):
 		("skeleton", k4abt_skeleton_t),
 	]
 
+	def __init__(self, id=0, skeleton=k4abt_skeleton_t()):
+		super().__init__()
+		self.id = id
+		self.skeleton = skeleton
+
 	def __iter__(self):
 		return {'id':self.id, 'skeleton': self.skeleton.__iter__()}
 
@@ -183,6 +208,11 @@ class _k4abt_joint2D_t(ctypes.Structure):
 		("position", k4a_float2_t),
 		("confidence_level", ctypes.c_int),
 	]
+
+	def __init__(self, position=(0,0), confidence_level=0):
+		super().__init__()
+		self.position = k4a_float2_t(position)
+		self.confidence_level = confidence_level
 
 	def __iter__(self):
 		return {'position':self.position.__iter__(),
@@ -195,6 +225,10 @@ class k4abt_skeleton2D_t(ctypes.Structure):
 		("joints2D", _k4abt_joint2D_t * K4ABT_JOINT_COUNT),
 	]
 
+	def __init__(self, joints=(_k4abt_joint2D_t() for i in range(K4ABT_JOINT_COUNT))):
+		super().__init__()
+		self.joints2D = (_k4abt_joint2D_t * K4ABT_JOINT_COUNT)(*joints)
+
 	def __iter__(self):
 		return {'joints2D': [joint.__iter__() for joint in self.joints2D]}
 
@@ -203,6 +237,11 @@ class k4abt_body2D_t(ctypes.Structure):
 		("id", ctypes.c_uint32),
 		("skeleton", k4abt_skeleton2D_t),
 	]
+
+	def __init__(self, id=0, skeleton=k4abt_skeleton2D_t()):
+		super().__init__()
+		self.id = id
+		self.skeleton = skeleton
 
 	def __iter__(self):
 		return {'id':self.id, 'skeleton': self.skeleton.__iter__()}

@@ -5,10 +5,11 @@ from pykinect_azure.k4a.image import Image
 
 class Transformation:
 
-	def __init__(self, calibration_handle):
-		self._handle = _k4a.k4a_transformation_create(calibration_handle)
-		self.color_resolution = Resolution(calibration_handle.color_camera_calibration.resolution_width, calibration_handle.color_camera_calibration.resolution_height)
-		self.depth_resolution = Resolution(calibration_handle.depth_camera_calibration.resolution_width, calibration_handle.depth_camera_calibration.resolution_height)	
+	def __init__(self, calibration):
+		self.calibration = calibration
+		self._handle = _k4a.k4a_transformation_create(calibration.handle())
+		self.color_resolution = Resolution(calibration.handle().color_camera_calibration.resolution_width, calibration.handle().color_camera_calibration.resolution_height)
+		self.depth_resolution = Resolution(calibration.handle().depth_camera_calibration.resolution_width, calibration.handle().depth_camera_calibration.resolution_height)
 
 	def __del__(self):
 		self.destroy()

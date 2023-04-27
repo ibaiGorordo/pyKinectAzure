@@ -60,7 +60,7 @@ class Device:
 		if self.is_capture_initialized():
 			Device.capture._handle = capture_handle
 		else :
-			Device.capture = Capture(capture_handle, Device.calibration.handle())
+			Device.capture = Capture(capture_handle, Device.calibration)
 		
 		# Write capture if recording
 		if self.recording:

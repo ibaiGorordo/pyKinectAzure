@@ -6,6 +6,8 @@ from pykinect_azure.k4a._k4atypes import K4A_WAIT_INFINITE
 from pykinect_azure.utils import get_k4abt_lite_model_path
 
 class Tracker:
+	_handle = None
+
 	def __init__(self, calibration, model_type, tracker_configuration):
 
 		self.tracker_configuration = tracker_configuration
