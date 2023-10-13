@@ -1,5 +1,5 @@
 import numpy as np
-import cv2 
+import cv2
 
 from pykinect_azure.k4abt import _k4abt
 from pykinect_azure.k4abt.body import Body
@@ -50,7 +50,7 @@ class Frame:
 
 	def get_body_skeleton(self, index=0):
 		skeleton = _k4abt.k4abt_skeleton_t()
-		_k4abt.VERIFY(_k4abt.k4abt_frame_get_body_skeleton(self._handle,index, skeleton),"Body tracker get body skeleton failed!")
+		_k4abt.VERIFY(_k4abt.k4abt_frame_get_body_skeleton(self._handle, index, skeleton), "Body tracker get body skeleton failed!")
 		return skeleton
 
 	def get_body_id(self, index=0):
@@ -102,7 +102,7 @@ class Frame:
 		return self.get_body_index_map().to_numpy()
 
 	def get_transformed_body_index_map(self):
-		depth_image = self.get_capture().get_depth_image_object()	
+		depth_image = self.get_capture().get_depth_image_object()
 		return self.transformation.depth_image_to_color_camera_custom(depth_image, self.get_body_index_map())
 
 	def get_transformed_body_index_map_image(self):
@@ -111,12 +111,12 @@ class Frame:
 
 	def get_segmentation_image(self):
 		ret, body_index_map = self.get_body_index_map_image()
-		return ret, np.dstack([cv2.LUT(body_index_map, body_colors[:,i]) for i in range(3)])
+		return ret, np.dstack([cv2.LUT(body_index_map, body_colors[:, i]) for i in range(3)])
 
 	def get_transformed_segmentation_image(self):
 		ret, transformed_body_index_map = self.get_transformed_body_index_map_image()
-		return ret, np.dstack([cv2.LUT(transformed_body_index_map, body_colors[:,i]) for i in range(3)])
-		
+		return ret, np.dstack([cv2.LUT(transformed_body_index_map, body_colors[:, i]) for i in range(3)])
+
 	def get_capture(self):
 		return Capture(_k4abt.k4abt_frame_get_capture(self._handle), self.calibration._handle)
 
