@@ -42,9 +42,6 @@ class Body2d:
 		self.joints = joints
 
 	def draw(self, image, only_segments = False):
-
-		color = (int (body_colors[self.id][0]), int (body_colors[self.id][1]), int (body_colors[self.id][2]))
-
 		for segmentId in range(len(K4ABT_SEGMENT_PAIRS)):
 			segment_pair = K4ABT_SEGMENT_PAIRS[segmentId]
 			point1 = self.joints[segment_pair[0]].get_coordinates()
@@ -52,15 +49,25 @@ class Body2d:
 
 			if (point1[0] == 0 and point1[1] == 0) or (point2[0] == 0 and point2[1] == 0):
 				continue
-			image = cv2.line(image, point1, point2,color, 2)
+
+			image = cv2.line(image, point1, point2, self.color, 2)
 
 		if only_segments:
 			return image
 
 		for joint in self.joints:
-			image = cv2.circle(image, joint.get_coordinates(), 3, color, 3)
+			image = cv2.circle(image, joint.get_coordinates(), 3, self.color, 3)
 
 		return image
+
+	@property
+	def color(self, unique_colors=200):
+		total_colors = 256 ** 3
+		hex_color = self.id * int(total_colors / unique_colors)
+		r = (hex_color >> 16) & 0xFF
+		g = (hex_color >> 8) & 0xFF
+		b = hex_color & 0xFF
+		return [r, g, b]
 
 
 	@staticmethod
