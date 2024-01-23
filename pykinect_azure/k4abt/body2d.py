@@ -8,6 +8,7 @@ from pykinect_azure.k4a._k4atypes import K4A_CALIBRATION_TYPE_DEPTH
 
 class Body2d:
 	def __init__(self, body2d_handle):
+		self.joints = None
 
 		if body2d_handle:
 			self._handle = body2d_handle
