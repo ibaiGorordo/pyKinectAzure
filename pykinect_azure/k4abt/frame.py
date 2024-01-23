@@ -82,7 +82,7 @@ class Frame:
 
 		body_handle = self.get_body(bodyIdx).handle()
 
-		return Body2d.create(body_handle, self.calibration, bodyIdx, dest_camera)
+		return Body2d.create(body_handle, self.calibration, body_handle.id, dest_camera)
 
 	def draw_bodies(self, destination_image, dest_camera = K4A_CALIBRATION_TYPE_DEPTH, only_segments = False):
 		num_bodies = self.get_num_bodies()

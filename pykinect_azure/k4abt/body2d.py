@@ -15,7 +15,6 @@ class Body2d:
 			self.initialize_skeleton()
 
 	def __del__(self):
-
 		self.destroy()
 
 	def json(self):
