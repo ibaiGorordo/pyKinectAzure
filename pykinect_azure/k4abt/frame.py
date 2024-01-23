@@ -10,7 +10,6 @@ from pykinect_azure.k4a._k4atypes import K4A_CALIBRATION_TYPE_DEPTH
 
 class Frame:
 	def __init__(self, frame_handle, calibration):
-
 		if frame_handle:
 			self._handle = frame_handle
 			self.calibration = calibration
@@ -21,7 +20,6 @@ class Frame:
 		self.reset()
 
 	def json(self):
-
 		bodies = self.get_bodies()
 
 		if not bodies:
@@ -47,10 +45,10 @@ class Frame:
 	def get_num_bodies(self):
 		return _k4abt.k4abt_frame_get_num_bodies(self._handle)
 
-	def get_body_skeleton(self, index=0):
+	def get_body_skeleton(self, index = 0):
 		skeleton = _k4abt.k4abt_skeleton_t()
-
-		_k4abt.VERIFY(_k4abt.k4abt_frame_get_body_skeleton(self._handle, index, skeleton), "Body tracker get body skeleton failed!")
+		_k4abt.VERIFY(result=_k4abt.k4abt_frame_get_body_skeleton(self._handle, index, skeleton),
+					  error="Body tracker get body skeleton failed!")
 
 		return skeleton
 
@@ -58,7 +56,6 @@ class Frame:
 		return _k4abt.k4abt_frame_get_body_id(self._handle, index)
 
 	def get_bodies(self):
-
 		bodies = []
 
 		# Get the number of people in the frame
@@ -71,29 +68,38 @@ class Frame:
 
 		return bodies
 
-	def get_body(self, bodyIdx = 0):
+	def get_body(self, body_index = 0):
 		body_handle = k4abt_body_t()
-		body_handle.id = self.get_body_id(bodyIdx);
-		body_handle.skeleton = self.get_body_skeleton(bodyIdx);
-
+		body_handle.id = self.get_body_id(body_index)
+		body_handle.skeleton = self.get_body_skeleton(body_index)
 		return Body(body_handle)
 
-	def get_body2d(self, bodyIdx = 0, dest_camera = K4A_CALIBRATION_TYPE_DEPTH):
-
-		body_handle = self.get_body(bodyIdx).handle()
-
+	def get_body2d(self, body_index = 0, dest_camera = K4A_CALIBRATION_TYPE_DEPTH):
+		body_handle = self.get_body(body_index).handle()
 		return Body2d.create(body_handle, self.calibration, body_handle.id, dest_camera)
 
-	def draw_bodies(self, destination_image, dest_camera = K4A_CALIBRATION_TYPE_DEPTH, only_segments = False):
-		num_bodies = self.get_num_bodies()
-
-		for body_id in range(num_bodies):
-			destination_image = self.draw_body2d(destination_image, body_id, dest_camera, only_segments)
-
+	def draw_bodies(self,
+					destination_image,
+					dest_camera = K4A_CALIBRATION_TYPE_DEPTH,
+					only_segments = False,
+					show_ids = False):
+		for body_id in range(self.get_num_bodies()):
+			destination_image = self.draw_body2d(destination_image=destination_image,
+												 body_index=body_id,
+												 dest_camera=dest_camera,
+												 only_segments=only_segments,
+												 show_ids=show_ids)
 		return destination_image
 
-	def draw_body2d(self, destination_image, bodyIdx = 0, dest_camera = K4A_CALIBRATION_TYPE_DEPTH, only_segments = False):
-		return self.get_body2d(bodyIdx, dest_camera).draw(destination_image, only_segments)
+	def draw_body2d(self,
+					destination_image,
+					body_index = 0,
+					dest_camera = K4A_CALIBRATION_TYPE_DEPTH,
+					only_segments = False,
+					show_ids = False):
+		return self.get_body2d(body_index, dest_camera).draw(image=destination_image,
+															 only_segments=only_segments,
+															 show_id=show_ids)
 
 	def get_device_timestamp_usec(self):
 		return _k4abt.k4abt_frame_get_device_timestamp_usec(self._handle)

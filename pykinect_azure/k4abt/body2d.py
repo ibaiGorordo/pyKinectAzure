@@ -42,9 +42,9 @@ class Body2d:
 
 		self.joints = joints
 
-	def draw(self, image, only_segments = False):
-		for segmentId in range(len(K4ABT_SEGMENT_PAIRS)):
-			segment_pair = K4ABT_SEGMENT_PAIRS[segmentId]
+	def draw(self, image, only_segments = False, show_id = False):
+		for segment_id in range(len(K4ABT_SEGMENT_PAIRS)):
+			segment_pair = K4ABT_SEGMENT_PAIRS[segment_id]
 			point1 = self.joints[segment_pair[0]].get_coordinates()
 			point2 = self.joints[segment_pair[1]].get_coordinates()
 
@@ -52,6 +52,16 @@ class Body2d:
 				continue
 
 			image = cv2.line(image, point1, point2, self.color, 2)
+
+		if show_id:
+			image = cv2.putText(img=image,
+								text=str(self.id),
+								org=(50, 50),
+								fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+								fontScale=1,
+								color=(255, 255, 255), # white
+								thickness=1,
+								lineType=cv2.LINE_AA)
 
 		if only_segments:
 			return image
