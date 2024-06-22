@@ -1,7 +1,7 @@
 import numpy as np
 import platform
 import sys
-
+import os
 
 def get_k4a_module_path():
 
@@ -13,12 +13,20 @@ def get_k4a_module_path():
     if platform.system().lower() == 'linux':
         return r'/usr/lib/x86_64-linux-gnu/libk4a.so'
 
-    # In Windows check the architecture
+    # For Windows, check what version is installed (v1.4.1 or v1.4.2)
+    sdk_dir = 'C:\\Program Files\\Azure Kinect SDK v1.4.2'
+    if not os.path.exists(sdk_dir):
+        sdk_dir = 'C:\\Program Files\\Azure Kinect SDK v1.4.1'
+        if not os.path.exists(sdk_dir):
+            print('Compatible Azure Kinect SDK not found. Please install v1.4.1 or v1.4.2')
+            sys.exit(1)
+
+    # Check the architecture
     if platform.machine().lower() == 'amd64':
-        return 'C:\\Program Files\\Azure Kinect SDK v1.4.1\\sdk\\windows-desktop\\amd64\\release\\bin\\k4a.dll'
+        return sdk_dir + '\\sdk\\windows-desktop\\amd64\\release\\bin\\k4a.dll'
 
     # Otherwise return the x86 Windows version
-    return 'C:\\Program Files\\Azure Kinect SDK v1.4.1\\sdk\\windows-desktop\\x86\\release\\bin\\k4a.dll'
+    return sdk_dir + '\\sdk\\windows-desktop\\x86\\release\\bin\\k4a.dll'
 
 def get_k4abt_module_path():
 
