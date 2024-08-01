@@ -1,3 +1,5 @@
+import ctypes
+
 import numpy as np
 import cv2
 
@@ -55,6 +57,17 @@ class Image:
 	def size(self):
 		return self.get_size()
 
+	@property
+	def timestamp_usec(self):
+		return self.get_timestamp_usec()
+
+	@property
+	def device_timestamp_usec(self):
+		return self.get_device_timestamp_usec()
+
+	@property
+	def system_timestamp_nsec(self):
+		return self.get_system_timestamp_nsec()
 
 	def get_buffer(self):
 		if not self._handle:
@@ -88,6 +101,15 @@ class Image:
 
 	def get_stride_bytes(self):
 		return int(_k4a.k4a_image_get_stride_bytes(self._handle))
+
+	def get_timestamp_usec(self):
+		return _k4a.k4a_image_get_timestamp_usec(self._handle)
+
+	def get_device_timestamp_usec(self):
+		return _k4a.k4a_image_get_device_timestamp_usec(self._handle)
+
+	def get_system_timestamp_nsec(self):
+		return _k4a.k4a_image_get_system_timestamp_nsec(self._handle)
 
 	def to_numpy(self):
 
