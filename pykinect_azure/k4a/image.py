@@ -37,10 +37,60 @@ class Image:
 
 		return Image(handle)
 
+	@staticmethod
+	def create_custom16_from_numpy(arr: np.ndarray):
+		if arr.dtype != np.uint16:
+			arr = arr.astype(np.uint16)
+		assert len(arr.shape) == 2 or len(arr.shape) == 3
+		if len(arr.shape) == 3 and arr.shape[2] != 1:
+			arr = arr[:, :, 0:1]
+
+		height, width = arr.shape[:2]
+		handle = _k4a.k4a_image_t()
+		_k4a.VERIFY(_k4a.k4a_image_create_from_buffer(_k4a.K4A_IMAGE_FORMAT_CUSTOM16, width, height, width * 2, arr.ctypes.data_as(ctypes.POINTER(ctypes.c_ubyte)), arr.size, None, None, handle), "Create image failed!")
+
+		return Image(handle)
+
+	@staticmethod
+	def create_custom16_from_shape(width: int, height: int):
+		arr = np.zeros((height, width, 1), dtype=np.uint8)
+		handle = _k4a.k4a_image_t()
+		_k4a.VERIFY(_k4a.k4a_image_create_from_buffer(_k4a.K4A_IMAGE_FORMAT_CUSTOM16, width, height, width * 2, arr.ctypes.data_as(ctypes.POINTER(ctypes.c_ubyte)), arr.size, None, None, handle),
+	                "Create image failed!")
+
+		return Image(handle)
+
+	@staticmethod
+	def create_bgra32_from_numpy(arr: np.ndarray):
+		if arr.dtype != np.uint8:
+			arr = arr.astype(np.uint8)
+		assert len(arr.shape) == 2 or len(arr.shape) == 3
+		if len(arr.shape) == 3:
+			if arr.shape[2] > 4:
+				arr = arr[:, :, 0:4]
+			elif arr.shape[2] < 4:
+				_arr = np.zeros((arr.shape[0], arr.shape[1], 4), dtype=np.uint8)
+				_arr[:, :, 0:arr.shape[2]] = arr
+				arr = _arr
+		else:
+			arr = np.repeat(arr[:, :, np.newaxis], 4, axis=2)
+
+		height, width = arr.shape[:2]
+		handle = _k4a.k4a_image_t()
+		_k4a.VERIFY(_k4a.k4a_image_create_from_buffer(_k4a.K4A_IMAGE_FORMAT_COLOR_BGRA32, width, height, width * 4, arr.ctypes.data_as(ctypes.POINTER(ctypes.c_ubyte)), arr.size, None, None, handle), "Create image failed!")
+
+		return Image(handle)
+
+	@staticmethod
+	def create_bgra32_from_shape(width: int, height: int):
+		arr = np.zeros((height, width, 4), dtype=np.uint8)
+		handle = _k4a.k4a_image_t()
+		_k4a.VERIFY(_k4a.k4a_image_create_from_buffer(_k4a.K4A_IMAGE_FORMAT_COLOR_BGRA32, width, height, width * 4, arr.ctypes.data_as(ctypes.POINTER(ctypes.c_ubyte)), arr.size, None, None, handle), "Create image failed!")
+
 	@property
 	def width(self):
 		return self.get_width_pixels()
-		
+
 	@property
 	def height(self):
 		return self.get_height_pixels()

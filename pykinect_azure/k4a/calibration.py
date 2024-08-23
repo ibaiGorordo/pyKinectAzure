@@ -51,43 +51,42 @@ class Calibration:
                     [0, self.depth_params.fy, self.depth_params.cy],
                     [0, 0, 1]]
 
-    def get_extrinsic_matrix(self):
-        color_rotation = np.array(list(self.color_extrinsics.rotation)).reshape(3, 3)
-        depth_rotation = np.array(list(self.depth_extrinsics.rotation)).reshape(3, 3)
-        color_translation = np.array(list(self.color_extrinsics.translation)) * 1e-3
-        depth_translation = np.array(list(self.depth_extrinsics.translation)) * 1e-3
+    def get_extrinsic_matrix(self, camera: _k4a.k4a_calibration_type_t):
+        if camera == _k4a.K4A_CALIBRATION_TYPE_COLOR:
+            color_rotation = np.array(list(self.color_extrinsics.rotation)).reshape(3, 3)
+            color_translation = np.array(list(self.color_extrinsics.translation)) * 1e-3
+            color_matrix = np.eye(4)
+            color_matrix[:3, :3] = color_rotation
+            color_matrix[:3, 3] = color_translation
+            return color_matrix.tolist()
 
-        color_matrix = np.eye(4)
-        color_matrix[:3, :3] = color_rotation
-        color_matrix[:3, 3] = color_translation
-        depth_matrix = np.eye(4)
-        depth_matrix[:3, :3] = depth_rotation
-        depth_matrix[:3, 3] = depth_translation
+        elif camera == _k4a.K4A_CALIBRATION_TYPE_DEPTH:
+            depth_rotation = np.array(list(self.depth_extrinsics.rotation)).reshape(3, 3)
+            depth_translation = np.array(list(self.depth_extrinsics.translation)) * 1e-3
+            depth_matrix = np.eye(4)
+            depth_matrix[:3, :3] = depth_rotation
+            depth_matrix[:3, 3] = depth_translation
+            return depth_matrix.tolist()
 
-        return {
-            "color": color_matrix.tolist(),
-            "depth": depth_matrix.tolist()
-        }
-
-    def get_distortion_parameters(self):
-        return {
-            "color": {
+    def get_distortion_parameters(self, camera: _k4a.k4a_calibration_type_t):
+        if camera == _k4a.K4A_CALIBRATION_TYPE_COLOR:
+            return {
                 "k": [self.color_params.k1, self.color_params.k2, self.color_params.k3, self.color_params.k4,
                       self.color_params.k5, self.color_params.k6],
                 "p": [self.color_params.p1, self.color_params.p2],
                 "codx": self.color_params.codx,
                 "cody": self.color_params.cody,
                 "metric_radius": self.color_params.metric_radius
-            },
-            "depth": {
+            }
+        elif camera == _k4a.K4A_CALIBRATION_TYPE_DEPTH:
+            return {
                 "k": [self.depth_params.k1, self.depth_params.k2, self.depth_params.k3, self.depth_params.k4,
-                      self.depth_params.k5, self.depth_params.k6],
+                    self.depth_params.k5, self.depth_params.k6],
                 "p": [self.depth_params.p1, self.depth_params.p2],
                 "codx": self.depth_params.codx,
                 "cody": self.depth_params.cody,
                 "metric_radius": self.depth_params.metric_radius
             }
-        }
 
     def is_valid(self):
         return self._handle
