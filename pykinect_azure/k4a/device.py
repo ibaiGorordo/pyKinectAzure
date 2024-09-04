@@ -1,5 +1,5 @@
 import ctypes
-
+from ctypes import byref
 from pykinect_azure.k4a import _k4a
 from pykinect_azure.k4a.capture import Capture
 from pykinect_azure.k4a.imu_sample import ImuSample
@@ -25,10 +25,10 @@ class Device:
 		return self._handle
 
 	def is_capture_initialized(self):
-		return Device.capture
+		return self.capture
 
 	def is_imu_sample_initialized(self):
-		return Device.imu_sample
+		return self.imu_sample
 
 	def handle(self):
 		return self._handle
@@ -58,15 +58,15 @@ class Device:
 		capture_handle = self.get_capture(timeout_in_ms)
 
 		if self.is_capture_initialized():
-			Device.capture._handle = capture_handle
+			self.capture._handle = capture_handle
 		else :
-			Device.capture = Capture(capture_handle, Device.calibration)
+			self.capture = Capture(capture_handle, self.calibration)
 		
 		# Write capture if recording
 		if self.recording:
-			self.record.write_capture(Device.capture.handle())
+			self.record.write_capture(self.capture.handle())
 			
-		return Device.capture
+		return self.capture
 
 	def update_imu(self, timeout_in_ms=K4A_WAIT_INFINITE):
 		
@@ -74,18 +74,18 @@ class Device:
 		imu_sample = self.get_imu_sample(timeout_in_ms)
 
 		if self.is_imu_sample_initialized():
-			Device.imu_sample._struct = imu_sample
-			Device.imu_sample.parse_data()
+			self.imu_sample._struct = imu_sample
+			self.imu_sample.parse_data()
 		else :
-			Device.imu_sample = ImuSample(imu_sample)
+			self.imu_sample = ImuSample(imu_sample)
 				
-		return Device.imu_sample
+		return self.imu_sample
 
 	def get_capture(self, timeout_in_ms=_k4a.K4A_WAIT_INFINITE):
 
 		# Release current handle
 		if self.is_capture_initialized():
-			Device.capture.release_handle()
+			self.capture.release_handle()
 
 		capture_handle = _k4a.k4a_capture_t()
 		_k4a.VERIFY(_k4a.k4a_device_get_capture(self._handle, capture_handle, timeout_in_ms),"Get capture failed!")
@@ -101,7 +101,7 @@ class Device:
 		return imu_sample
 
 	def start_cameras(self, device_config):
-		Device.calibration = self.get_calibration(device_config.depth_mode, device_config.color_resolution)
+		self.calibration = self.get_calibration(device_config.depth_mode, device_config.color_resolution)
 
 		_k4a.VERIFY(_k4a.k4a_device_start_cameras(self._handle, device_config.handle()),"Start K4A cameras failed!")
 
@@ -130,8 +130,11 @@ class Device:
 		return serial_number.value.decode("utf-8") 
 
 	def get_calibration(self, depth_mode, color_resolution):
-
-		calibration_handle = _k4a.k4a_calibration_t()
+# 		import copy#!!!!!!!
+# 		calibration_handle = copy.deepcopy(_k4a.k4a_calibration_t())#!!!!!!!
+# 		print(calibration_handle)#!!!!!!!
+        
+		calibration_handle = _k4a.k4a_calibration_t()#!!!!!!!
 
 		_k4a.VERIFY(_k4a.k4a_device_get_calibration(self._handle,depth_mode,color_resolution,calibration_handle),"Get calibration failed!")
 		
@@ -145,10 +148,43 @@ class Device:
 
 		return version
 
+	def device_configinit(self):
+		
+		device_config = Configuration()
+		device_config.color_format = _k4a.K4A_IMAGE_FORMAT_COLOR_BGRA32
+		device_config.color_resolution = _k4a.K4A_COLOR_RESOLUTION_1080P
+		device_config.depth_mode = _k4a.K4A_DEPTH_MODE_NFOV_2X2BINNED
+		device_config.calibration_type = _k4a.K4A_CALIBRATION_TYPE_COLOR
+		device_config.synchronized_images_only = True
+		
+		sync_in_connected = ctypes.c_bool()
+		sync_out_connected = ctypes.c_bool()
+		
+		if _k4a.K4A_RESULT_SUCCEEDED == _k4a.k4a_device_get_sync_jack(self.handle(), byref(sync_in_connected), byref(sync_out_connected)):
+			if sync_in_connected and not sync_out_connected:
+				device_config.wired_sync_mode = _k4a.K4A_WIRED_SYNC_MODE_SUBORDINATE
+				device_config.subordinate_delay_off_master_usec = 160
+				device_type = "Sub"
+			elif not sync_in_connected and sync_out_connected:
+				device_config.wired_sync_mode = _k4a.K4A_WIRED_SYNC_MODE_MASTER
+				device_type = "Master"
+			elif sync_in_connected and sync_out_connected:
+				device_config.wired_sync_mode = _k4a.K4A_WIRED_SYNC_MODE_SUBORDINATE
+				device_config.subordinate_delay_off_master_usec = 160
+				device_type = "Sub"
+			else:
+				device_config.wired_sync_mode = _k4a.K4A_WIRED_SYNC_MODE_STANDALONE
+				device_type = "Standalone"
+		else:
+			device_config.wired_sync_mode = _k4a.K4A_WIRED_SYNC_MODE_STANDALONE
+			device_type = "Standalone"
+		
+		return device_config, device_type
+					  		
 	@staticmethod
 	def open(index=0):
 		device_handle = _k4a.k4a_device_t()
-
+		
 		_k4a.VERIFY(_k4a.k4a_device_open(index, device_handle),"Open K4A Device failed!")
 
 		return device_handle

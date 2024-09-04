@@ -721,14 +721,12 @@ def k4a_transformation_depth_image_to_color_camera(transformation_handle, depth_
 																			const k4a_image_t depth_image,
 																			k4a_image_t transformed_depth_image);
 	"""
-
 	_k4a_transformation_depth_image_to_color_camera = k4a_dll.k4a_transformation_depth_image_to_color_camera
 	_k4a_transformation_depth_image_to_color_camera.restype=k4a_result_t
 	_k4a_transformation_depth_image_to_color_camera.argtypes=(k4a_transformation_t, \
 																	k4a_image_t,\
 																	k4a_image_t,\
-																	)
-
+																	)      
 	_k4a_transformation_depth_image_to_color_camera(transformation_handle, depth_image, transformed_depth_image)
 	
 def k4a_transformation_depth_image_to_color_camera_custom(transformation_handle, depth_image, custom_image, transformed_depth_image, transformed_custom_image, interpolation_type, invalid_custom_value):
@@ -762,7 +760,6 @@ def k4a_transformation_color_image_to_depth_camera(transformation_handle, depth_
 																			const k4a_image_t color_image,
 																			k4a_image_t transformed_color_image);
 	"""
-	
 	_k4a_transformation_color_image_to_depth_camera = k4a_dll.k4a_transformation_color_image_to_depth_camera
 	_k4a_transformation_color_image_to_depth_camera.restype=k4a_result_t
 	_k4a_transformation_color_image_to_depth_camera.argtypes=(k4a_transformation_t, \
@@ -770,7 +767,6 @@ def k4a_transformation_color_image_to_depth_camera(transformation_handle, depth_
 																	k4a_image_t,\
 																	k4a_image_t,\
 																	)
-
 	return _k4a_transformation_color_image_to_depth_camera(transformation_handle, depth_image, color_image, transformed_color_image)
 	
 def k4a_transformation_depth_image_to_point_cloud(transformation_handle, depth_image, camera, xyz_image):

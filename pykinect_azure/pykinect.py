@@ -50,14 +50,13 @@ def start_device(device_index=0, config=default_configuration, record=False, rec
 
     return device
 
-def start_body_tracker(model_type=_k4abt.K4ABT_DEFAULT_MODEL, calibration=None):
+def start_body_tracker(device, model_type=_k4abt.K4ABT_DEFAULT_MODEL, calibration=None):
     if calibration:
         return Tracker(calibration, model_type)
     else:
-        return Tracker(Device.calibration, model_type)
+        return Tracker(device.calibration, model_type)
 
 def start_playback(filepath):
 
     return Playback(filepath)
-
 

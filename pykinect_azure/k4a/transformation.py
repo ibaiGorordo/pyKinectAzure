@@ -66,14 +66,11 @@ class Transformation:
 
 		if not depth_image.is_valid() or not color_image.is_valid():
 			return Image()
-
 		transformed_color_image = Image.create(_k4a.K4A_IMAGE_FORMAT_COLOR_BGRA32,
 												self.depth_resolution.width,
 												self.depth_resolution.height,
 												self.depth_resolution.width*4)
-
 		_k4a.k4a_transformation_color_image_to_depth_camera(self._handle, depth_image.handle(), color_image.handle(), transformed_color_image.handle())
-
 		return transformed_color_image
 
 	def depth_image_to_point_cloud(self, depth_image, calibration_type = _k4a.K4A_CALIBRATION_TYPE_DEPTH):

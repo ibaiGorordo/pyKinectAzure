@@ -31,12 +31,12 @@ class Tracker:
 			_k4abt.k4abt_tracker_destroy(self._handle)
 			self._handle = None
 
-	def update(self, capture=None, timeout_in_ms=K4A_WAIT_INFINITE):
+	def update(self, device, capture=None, timeout_in_ms=K4A_WAIT_INFINITE):
 		# Add capture to the body tracker processing queue
 		if capture:
 			self.enqueue_capture(capture.handle(), timeout_in_ms)
 		else:
-			self.enqueue_capture(Device.capture.handle(), timeout_in_ms)
+			self.enqueue_capture(device.capture.handle(), timeout_in_ms)
 
 		return self.pop_result(timeout_in_ms)
 
