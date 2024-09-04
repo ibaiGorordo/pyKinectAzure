@@ -1,4 +1,5 @@
 import cv2 
+
 from pykinect_azure.k4a import _k4a
 from pykinect_azure.k4a.image import Image
 from pykinect_azure.k4a.transformation import Transformation
@@ -66,7 +67,7 @@ class Capture:
 		return self.get_color_image_object().to_numpy()
 
 	def get_depth_image(self):
-        
+
 		return self.get_depth_image_object().to_numpy()
 
 	def get_colored_depth_image(self):
