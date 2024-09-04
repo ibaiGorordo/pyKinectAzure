@@ -1,5 +1,4 @@
 import cv2 
-import ctypes
 from pykinect_azure.k4a import _k4a
 from pykinect_azure.k4a.image import Image
 from pykinect_azure.k4a.transformation import Transformation
@@ -67,6 +66,7 @@ class Capture:
 		return self.get_color_image_object().to_numpy()
 
 	def get_depth_image(self):
+        
 		return self.get_depth_image_object().to_numpy()
 
 	def get_colored_depth_image(self):
@@ -89,18 +89,6 @@ class Capture:
 
 	def get_transformed_color_image(self):
 		return self.get_transformed_color_object().to_numpy()
-    
-	def get_transformed_color_image_changed(self):
-		ret,color_image = self.get_color_image()
-		if not ret:
-			return False, None
-		bgra = cv2.cvtColor(color_image, cv2.COLOR_BGR2BGRA)
-		bgra_image_handle = _k4a.k4a_image_t()
-		image_format = _k4a.K4A_IMAGE_FORMAT_COLOR_BGRA32
-		buffer = bgra.ctypes.data_as(ctypes.POINTER(ctypes.c_uint8))
-		_k4a.VERIFY(_k4a.k4a_image_create_from_buffer(image_format, bgra.shape[1], bgra.shape[0], bgra.shape[1]*4, buffer, bgra.nbytes, ctypes.c_void_p(0), ctypes.c_void_p(0), bgra_image_handle), "MJPG to BGRA32 ERROR")
-		bgra_image = Image(bgra_image_handle)
-		return self.camera_transform.color_image_to_depth_camera(self.get_depth_image_object(),bgra_image).to_numpy()
 
 	def get_smooth_depth_image(self, maximum_hole_size=10):
 		ret, depth_image = self.get_depth_image()

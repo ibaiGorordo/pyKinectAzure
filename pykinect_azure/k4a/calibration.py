@@ -124,10 +124,9 @@ class Calibration:
         return target_point2d
 
     def get_extrinsic_parameters(self):
+        
         extrinsic = self._handle.extrinsics[_k4a.K4A_CALIBRATION_TYPE_COLOR][_k4a.K4A_CALIBRATION_TYPE_DEPTH]
-
         rotation = np.array(extrinsic.rotation).reshape((3, 3))
-        # Millimeter to meter conversion
         translation = np.array(extrinsic.translation).reshape((3, 1))
 
         return rotation, translation

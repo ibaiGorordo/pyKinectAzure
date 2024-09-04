@@ -129,12 +129,9 @@ class Device:
 
 		return serial_number.value.decode("utf-8") 
 
-	def get_calibration(self, depth_mode, color_resolution):
-# 		import copy#!!!!!!!
-# 		calibration_handle = copy.deepcopy(_k4a.k4a_calibration_t())#!!!!!!!
-# 		print(calibration_handle)#!!!!!!!
+	def get_calibration(self, depth_mode, color_resolution):   
         
-		calibration_handle = _k4a.k4a_calibration_t()#!!!!!!!
+		calibration_handle = _k4a.k4a_calibration_t()
 
 		_k4a.VERIFY(_k4a.k4a_device_get_calibration(self._handle,depth_mode,color_resolution,calibration_handle),"Get calibration failed!")
 		
@@ -149,7 +146,7 @@ class Device:
 		return version
 
 	def device_configinit(self):
-		
+ 		# Automatically determine master and Sub devices and config		
 		device_config = Configuration()
 		device_config.color_format = _k4a.K4A_IMAGE_FORMAT_COLOR_BGRA32
 		device_config.color_resolution = _k4a.K4A_COLOR_RESOLUTION_1080P
