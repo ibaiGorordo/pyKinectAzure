@@ -1,7 +1,7 @@
 import ctypes
 
 from pykinect_azure.k4a import _k4a
-
+import numpy as np
 
 class Calibration:
 
@@ -37,16 +37,17 @@ class Calibration:
         )
         return message
 
-    def get_matrix(self, camera: _k4a.k4a_calibration_type_t):
-        if camera == _k4a.K4A_CALIBRATION_TYPE_COLOR:
-            return [[self.color_params.fx, 0, self.color_params.cx],
+    def get_matrix(self):
+            return np.array([[self.color_params.fx, 0, self.color_params.cx],
                     [0, self.color_params.fy, self.color_params.cy],
-                    [0, 0, 1]]
-        elif camera == _k4a.K4A_CALIBRATION_TYPE_DEPTH:
-            return [[self.depth_params.fx, 0, self.depth_params.cx],
-                    [0, self.depth_params.fy, self.depth_params.cy],
-                    [0, 0, 1]]
-
+                    [0, 0, 1]])
+    
+    def get_distortion_coefficients(self) -> np.ndarray:
+       """
+       Get the distortion coefficients (in OpenCV compatible format) for the color or depth camera
+       """
+       return np.array([self.color_params.k1, self.color_params.k2, self.color_params.p1, self.color_params.p2, self.color_params.k3])
+    
     def is_valid(self):
         return self._handle
 
@@ -121,3 +122,11 @@ class Calibration:
                                                            valid), "Failed to convert from Color 2D to Depth 2D")
 
         return target_point2d
+
+    def get_extrinsic_parameters(self):
+        
+        extrinsic = self._handle.extrinsics[_k4a.K4A_CALIBRATION_TYPE_COLOR][_k4a.K4A_CALIBRATION_TYPE_DEPTH]
+        rotation = np.array(extrinsic.rotation).reshape((3, 3))
+        translation = np.array(extrinsic.translation).reshape((3, 1))
+
+        return rotation, translation

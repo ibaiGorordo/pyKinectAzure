@@ -5,3 +5,4 @@ from .k4arecord import Datablock, Record, Playback
 
 from .k4a._k4atypes import *
 from .k4abt._k4abtTypes import *
+from .k4a._k4a import *
