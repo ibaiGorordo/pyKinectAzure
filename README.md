@@ -1,5 +1,5 @@
 # pyKinectAzure
-[![PyPI](https://img.shields.io/pypi/v/pykinect-azure?color=2BAF2B)](https://pypi.org/project/pykinect-azure/)
+Thanks to IbaiGorordo for creating this amazing wrapper. This fork was created to add a class TrackerConfiguration to configure the body tracking properly.
 
 ![Azure kinect color and depth combination](https://github.com/ibaiGorordo/pyKinectAzure/blob/master/doc/images/outputImage.jpg)
 
