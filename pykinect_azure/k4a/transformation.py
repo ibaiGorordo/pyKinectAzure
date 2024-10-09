@@ -95,6 +95,8 @@ class Transformation:
 
 		if custom_image_format == _k4a.K4A_IMAGE_FORMAT_CUSTOM8:
 			return 1
+		elif custom_image_format == _k4a.K4A_IMAGE_FORMAT_COLOR_BGRA32:
+			return 4
 		else:
 			return 2
 
